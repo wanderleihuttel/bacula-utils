@@ -33,7 +33,8 @@ DBNAME="bacula"
 DBUSER="bacula"
 DBPASSWD="bacula"
 
-In postgresql is possible to create a file in home folder called ".pgpass" with the following content (need replacement with correct values)
+In postgresql is possible to create a file in home folder called ".pgpass" with the following content:
+(need replacement with correct values)
 hostname:port:database:username:password
 
 Set permission only for the owner
