@@ -25,7 +25,7 @@ HOUR=$(date +%d/%m/%Y\ %H:%M:%S)
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Config 
 DBHOST="localhost"
-DBPORT="localhost"
+DBPORT="3306"
 DBNAME="bacula"
 DBUSER="bacula"
 DBPASSWD="bacula"
