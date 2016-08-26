@@ -4,7 +4,8 @@
 ### Create a Telegram Bot 
 
 ```
-Add the user @BotFather to your telegram account and follow the steps below:
+Add the user @BotFather to your telegram account or access the address https://telegram.me/BotFather 
+and follow the steps below:
 - /newbot - create a new bot
 - Type a name for your bot. Example: Bacula Test Bot
 - Type a username for your bot. It must end in 'bot' Example: (bacula_test_bot)
@@ -19,7 +20,9 @@ https://api.telegram.org/bot1234567890:AAFd2sDMplKGyoajsPWARnSOwa9EqHiy17U/getUp
 Open in browser the URL. You will receive a JSON output, get the 'id' value.
 
 {"ok":true,"result":[{"update_id":565543449,
-"message":{"message_id":3,"from":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name","username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name","username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
+"message":{"message_id":3,"from":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
+"username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
+"username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
 ```
 ### Fill the fields in scripts
 
