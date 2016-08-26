@@ -11,6 +11,13 @@ During the installation, a prompt will appear asking for your general type of ma
 - Select Internet
 - Type 'localhost'
 ```
+### Copy the files (main.cf, generic and sasl_passwd) to /etc/postfix
+
+### Modify the file /etc/postfix/main.cf and change the following lines
+```
+myhostname = debian   # CHANGE ME
+relayhost = [smtp.domain.com]:587 # CHANGE ME
+```
 
 ### Modify the file /etc/postfix/sasl_passwd with your mail credentials
 ```
