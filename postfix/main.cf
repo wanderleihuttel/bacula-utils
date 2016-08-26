@@ -1,0 +1,33 @@
+# Postfix example relay external SMTP
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+
+# Hostname
+myhostname = debian   # CHANGE ME
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = /etc/mailname
+mydestination = $myhostname localhost.$mydomain localhost $mydomain
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_command = procmail -a "$EXTENSION"
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+# SMTP relayhost
+relayhost = [smtp.domain.com]:587 # CHANGE ME
+
+# TLS Settings
+smtp_tls_loglevel = 1
+smtp_use_tls = yes
+smtpd_tls_received_header = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_tls_security_options = noanonymous
+
+# Alias rewrite map mail
+smtp_generic_maps = hash:/etc/postfix/generic
