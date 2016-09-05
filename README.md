@@ -2,7 +2,7 @@
 
 
 
-[Conf](/confs) - Example of bacula conf files
+[Conf](/conf) - Example of bacula conf files
 
 [Firebird](/firebird) - Script to backup firebird database
 
