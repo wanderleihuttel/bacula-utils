@@ -4,7 +4,9 @@
 
 [Conf](/conf) - Example of bacula conf files
 
-[Firebird](/firebird) - Script to backup firebird database
+[Firebird](/firebird) - Script to backup firebird databases
+
+[MySQL](/mysql) - Script to backup MySQL databases
 
 [Postfix](/postfix) - Configure Postfix to send mail using an external SMTP server
 
