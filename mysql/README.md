@@ -21,7 +21,7 @@ IGNREG='^information_schema$|^performance_schema$|^bacula$|^mysql$'
 ### Configure Fileset
 ```
 FileSet {
-  Name = "FileSet_Firebird"
+  Name = "FileSet_MySQL"
   Include {
     Options {
       signature = md5
