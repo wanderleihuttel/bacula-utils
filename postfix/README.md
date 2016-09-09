@@ -1,43 +1,43 @@
-## Configure Postfix to send mail using an external SMTP server
+## Configurar o Postfix para enviar emails usando um servidor SMTP externo
 
 
-### Update and Install dependencies
+### Atualizar e instalar dependências
 
 ```
 apt-get update
 apt-get postfix mailutils install libsasl2-modules
 
-During the installation, a prompt will appear asking for your general type of mail configuration.
-- Select Internet
-- Type 'localhost'
+Durante a instalação vai abrir um prompt perguntando qual o tipo de configuração de email:
+- Selecione Internet
+- Digite 'localhost'
 ```
-### Copy the files (main.cf, generic and sasl_passwd) to /etc/postfix
+### Copiar os arquivos (main.cf, generic e sasl_passwd) para /etc/postfix
 
-### Modify the file /etc/postfix/main.cf and change the following lines
+### Modificar o arquivo /etc/postfix/main.cf e alterar as linhas abaixo
 ```
 myhostname = debian   # CHANGE ME
-relayhost = [smtp.domain.com]:587 # CHANGE ME
+relayhost = [smtp.dominio.com]:587 # ALTERAR
 ```
 
-### Modify the file /etc/postfix/sasl_passwd with your mail credentials
+### Modificar o arquivo /etc/postfix/sasl_passwd com as credenciais
 ```
-Example:
+Exemplo:
 [smtp.domain.com]:587 user@domain.com:password
 ```
 
-### Modify the file /etc/postfix/generic with your generic mail rewrite
+### Modificar o arquivo /etc/postfix/generic com o email genérico para reescrever
 ```
 Example:
 root@debian.local       user@domain.com
 ```
 
-### Create the hash db file for Postfix by running the postmap command
+### Criar os hash's db's do Postfix com o comando postmap
 ```
 postmap /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_generic
 ```
 
-### Test mail send
+### Testar o envio de email
 ```
 echo "OK" | mail -s "Testing mail postfix external SMTP" user@domain.com
 ```
