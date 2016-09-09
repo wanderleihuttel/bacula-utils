@@ -1,4 +1,4 @@
-## Backup de Banco de Dados Firebird utilizando o Bacula
+## Backup de Banco de Dados Firebird
 
 ### Copiar os arquivos para o diretório scripts
 ```
