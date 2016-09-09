@@ -1,24 +1,24 @@
-## Backup MySQL Databases
+## Backup de Banco de Dados MySQL
 
-### Copy file to bacula client scripts folder
+### Copiar o arquivo para o diretório scripts
 ```
-Usually is /etc/bacula/scripts
+Geralmente é /etc/bacula/scripts
 ```
 
-### Configure the variables
+### Configurar as variáveis
 ```
-# Directory to store backups
+# Diretório onde armazenar os backups
 DST=/path/to/mysql/backup/folder
 
-# The MySQL username and password
+# Usuário e senha MySQL
 DBUSER="root"
 DBPASS=""
 
-# A regex, passed to egrep -v, for which databases to ignore
+# Regex, passado para o egrep -v, para ignorar os bancos de dados
 IGNREG='^information_schema$|^performance_schema$|^bacula$|^mysql$'
 ```
 
-### Configure Fileset
+### Configurar o Fileset
 ```
 FileSet {
   Name = "FileSet_MySQL"
@@ -33,7 +33,7 @@ FileSet {
   }
 }
 ```
-### Configure Job
+### Configurar o Job
 ```
 Job {
   Name = "Backup_MySQL"
@@ -45,4 +45,4 @@ Job {
 }
 ```
 
-### Run a backup
+### Executar o backup
