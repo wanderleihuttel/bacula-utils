@@ -1,13 +1,13 @@
-## A collect of utilities to use with bacula
+## Exemplos e utilidades para usar com o bacula
 
 
 
-[Conf](/conf) - Example of bacula conf files
+[Conf](/conf) - Exemplo de configurações
 
-[Firebird](/firebird) - Script to backup firebird databases
+[Firebird](/firebird) - Script para efetuar backup de banco de dados Firebird
 
-[MySQL](/mysql) - Script to backup MySQL databases
+[MySQL](/mysql) - Script para efetuar backup de banco de dados MySQL
 
-[Postfix](/postfix) - Configure Postfix to send mail using an external SMTP server
+[Postfix](/postfix) - Configurar postfix para enviar email usando um servidor SMTP externo
 
-[Telegram scripts](/telegram) - Scripts to send messages of jobs using telegram
+[Telegram scripts](/telegram) - Script para enviar mensagem dos jobs usando o Telegram
