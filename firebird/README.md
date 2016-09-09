@@ -1,10 +1,10 @@
-## Backup Database Firebird using Bacula
+## Backup de Banco de Dados Firebird utilizando o Bacula
 
-### Copy files to bacula client scripts folder
+### Copiar os arquivos para o diretório scripts
 ```
-Usually is C:\Program Files\Bacula\scripts
+Geralmente é C:\Program Files\Bacula\scripts
 ```
-### Configure Fileset
+### Configurar o Fileset
 ```
 FileSet {
   Name = "FileSet_Firebird"
@@ -20,7 +20,7 @@ FileSet {
   }
 }
 ```
-### Configure Job
+### Configurar o Job
 ```
 Job {
   Name = "Backup_Firebird"
@@ -33,4 +33,4 @@ Job {
 }
 ```
 
-### Configure the variables in the script and run a backup
+### Configurar as variáveis do script e executar o backup
