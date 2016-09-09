@@ -1,1 +1,1 @@
-## How to configure bacula-dir.conf in separated files
+## Exemplo de configuração do bacula em arquivos separados
