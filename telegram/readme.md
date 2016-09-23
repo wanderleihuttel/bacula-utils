@@ -17,7 +17,7 @@ Substituir na url com a chave da API
 https://api.telegram.org/bot${API_KEY}/getUpdates
 https://api.telegram.org/bot1234567890:AAFd2sDMplKGyoajsPWARnSOwa9EqHiy17U/getUpdates
 
-Abrir o browser e colar a URL. Você vai receber uma saída no formato JSON, pegar o valor do 'id'.
+Enviar uma mensagem no bot e abrir o browser e colar a URL Você vai receber uma saída no formato JSON, pegar o valor do 'id'.
 
 {"ok":true,"result":[{"update_id":565543449,
 "message":{"message_id":3,"from":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
@@ -28,7 +28,7 @@ Abrir o browser e colar a URL. Você vai receber uma saída no formato JSON, peg
 
 ```
 DBHOST="localhost"
-DBPORT="localhost"
+DBPORT="3306"
 DBNAME="bacula"
 DBUSER="bacula"
 DBPASSWD="bacula"
