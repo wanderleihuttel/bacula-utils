@@ -56,3 +56,9 @@ JobDefs {
   }
 }
 ```
+
+### Instalar dependências
+
+```
+apt-get install curl
+```
