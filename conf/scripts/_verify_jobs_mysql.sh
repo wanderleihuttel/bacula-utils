@@ -30,6 +30,13 @@ echo -ne "$query" | grep -v "\-\-\-" | while read row; do
   Client=`echo $row | cut -d"|" -f6 | sed 's/^ \(.*\) $/\1/'`;
   Fileset=`echo $row | cut -d"|" -f8 | sed 's/^ \(.*\) $/\1/'`;
   Storage=`echo $row | cut -d"|" -f9 | sed 's/^ \(.*\) $/\1/'`;
-  echo "run job=Verify_VolumeToCatalog client=$Client fileset=$Fileset jobid=$JobId storage=$Storage priority=$c yes" | bconsole
+  # Run a Verify_Data 
+  JobIdRun=`echo "run job=Verify_Data client=$Client fileset=$Fileset jobid=$JobId storage=$Storage priority=$c yes" | bconsole | grep JobId | sed 's/[^0-9]*//g'`
+  # Run a Verify_VolumeToCatalog
+  #JobIdRun=`echo "run job=Verify_VolumeToCatalog client=$Client fileset=$Fileset jobid=$JobId storage=$Storage priority=$c yes" | bconsole | grep JobId | sed 's/[^0-9]*//g'`
   (( c++ ))
+  sleep 1
+  # The MySQL command update Job name including the Job that was verified
+  #mysql -u $DBUSER -p$DBPASSWD -D $DBNAME -h $DBHOST -P $DBPORT -e "update Job set Name = 'Verify_Data ($JobName)' where JobId = $JobIdRun;"
+  #mysql -u $DBUSER -p$DBPASSWD -D $DBNAME -h $DBHOST -P $DBPORT -e "update Job set Name = 'Verify_VolumeToCatalog ($JobName)' where JobId = $JobIdRun;"
 done
