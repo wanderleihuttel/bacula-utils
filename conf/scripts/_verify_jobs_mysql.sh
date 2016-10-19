@@ -57,6 +57,6 @@ echo "$query" | grep -v "\-\-\-" | while read row; do
   sleep 1 
   # The MySQL command update Job name including the Job that was verified
   if [ "$JobIdRun" != "" ]; then
-     mysql -u $DBUSER -p$DBPASSWD -D $DBNAME -h $DBHOST -P $DBPORT -e "update Job set Name = '$Verify_Data ($JobName)' where JobId = $JobIdRun;"
+     mysql -u $DBUSER -p$DBPASSWD -D $DBNAME -h $DBHOST -P $DBPORT -e "update Job set Name = '$Verify_Job ($JobName)' where JobId = $JobIdRun;"
   fi
 done
