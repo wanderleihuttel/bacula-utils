@@ -34,7 +34,7 @@ root@debian.local       user@domain.com
 ### Criar os hash's db's do Postfix com o comando postmap
 ```
 postmap /etc/postfix/sasl_passwd
-postmap /etc/postfix/sasl_generic
+postmap /etc/postfix/generic
 ```
 
 ### Testar o envio de email
