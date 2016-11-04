@@ -31,6 +31,12 @@ Example:
 root@debian.local       user@domain.com
 ```
 
+### Verificar o arquivo /etc/mailname e caso esteja com problemas alterar para localhost
+```
+Example:
+echo "localhost" > /etc/mailname
+```
+
 ### Criar os hash's db's do Postfix com o comando postmap
 ```
 postmap /etc/postfix/sasl_passwd
