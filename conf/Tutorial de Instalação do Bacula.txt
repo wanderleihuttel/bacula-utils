@@ -1,0 +1,104 @@
+#####################################################################################
+>>>>>  Passos para Instalação do Bacula via Compilação em Debian 8.4 <<<<<
+>>>>>  MySQL e PostgreSQL                                            <<<<<
+#####################################################################################
+* Leia tudo antes de começar a instalar só depois inicie a instalação
+
+>>> Atualizar a lista dos pacotes <<<
+apt-get update
+
+
+>>> Pacotes necessários para compilação padrão + alguns utilitários <<<
+apt-get install vim make gcc build-essential libpq5 perl unp mc mtx libreadline6 libreadline6-dbg libreadline-gplv2-dev lzop liblzo2-dev python-lzo sudo gawk gdb libacl1 libacl1-dev git sysv-rc-conf ntfs-3g cifs-utils postfix mailutils
+
+
+>>> Pacotes do PHP <<<
+apt-get install php5 php5-gd php5-dev php5-mcrypt php5-curl
+
+
+>>> Pacotes para o banco de dados MySQL <<<
+*Quando solicitado a senha do mysql deixar em branco para ficar sem senha.
+apt-get install mysql-server libmysqlclient-dev php5-mysqlnd
+
+
+>>> Pacotes para o banco de dados PostgreSQL <<<
+apt-get install postgresql-9.4 postgresql-contrib-9.4 postgresql-client-9.4 postgresql-server-dev-9.4 php5-pgsql
+
+
+>>> Baixando e Compilando o Fonte <<<
+cd /usr/src
+*Utilizando wget 
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/7.4.3/bacula-7.4.3.tar.gz
+
+*Utilizando git (sempre pega a versão mais recente)
+git clone -b Branch-7.4 http://git.bacula.org/bacula bacula
+
+cd /usr/src/bacula/bacula
+* Comando de compilação para MySQL
+./configure --enable-smartalloc --with-mysql --with-db-user=bacula --with-db-password=bacula --with-db-port=3306 --with-readline=/usr/include/readline --sysconfdir=/etc/bacula  --sbindir=/sbin --with-scriptdir=/etc/bacula/scripts --with-plugindir=/etc/bacula/plugins --with-pid-dir=/etc/bacula/working --with-subsys-dir=/etc/bacula/working --with-working-dir=/etc/bacula/working --with-bsrdir=/etc/bacula/bootstrap --with-systemd --disable-conio --disable-nls --with-logdir=/var/log/bacula
+
+* Comando de compilação para PostgreSQL
+./configure --enable-smartalloc --with-postgresql --with-db-user=bacula --with-db-password=bacula --with-db-port=5432 --with-readline=/usr/include/readline --sysconfdir=/etc/bacula  --sbindir=/sbin --with-scriptdir=/etc/bacula/scripts --with-plugindir=/etc/bacula/plugins --with-pid-dir=/etc/bacula/working --with-subsys-dir=/etc/bacula/working --with-working-dir=/etc/bacula/working --with-bsrdir=/etc/bacula/bootstrap --with-systemd --disable-conio --disable-nls --with-logdir=/var/log/bacula
+
+make -j 8
+make install
+make install-autostart
+
+
+>>> Configurar o MySQL p/ ter acesso na rede pelo MySQL Workbench (opcional) <<<
+Editar o arquivo /etc/mysql/my.cnf e alterar a linha bind-address: 
+de: 	bind-address = 127.0.0.1
+para: bind-address = 0.0.0.0
+/etc/init.d/mysql restart
+
+
+>>> Configurar os usuários no MySQL <<<
+mysql -u root
+grant all on *.* to 'root'@'%';
+create user bacula;
+grant all on *.* to 'bacula'@'%' identified by 'bacula' with grant option;
+GRANT SELECT ON mysql.proc to 'bacula';
+flush privileges;
+quit
+/etc/init.d/mysql restart
+
+
+>>> Criar as tabelas do bacula no MySQL <<<
+cd /etc/bacula/scripts
+./create_mysql_database
+./make_mysql_tables
+./grant_mysql_privileges
+
+
+>>> Criar as tabelas do bacula no PostgreSQL <<<
+cd /etc/bacula/scripts
+chown postgres create_postgresql_database
+chown postgres make_postgresql_tables
+chown postgres grant_postgresql_privileges 
+su postgres
+./create_postgresql_database
+./make_postgresql_tables
+./grant_postgresql_privileges
+exit
+
+
+>>> Configurar o acesso ao PostgreSQL pelo bacula <<<
+Editar o arquivo /etc/postgresql/9.4/main/pg_hba.conf e incluir a seguinte linha:
+host    bacula      bacula      127.0.0.1/32          md5
+
+Editar o arquivo /etc/postgresql/9.4/main/postgresql.conf e alterar a linha abaixo:
+listen_addresses = '*'
+
+
+>>> Definindo a senha do usuário bacula no PostgreSQL <<<
+su postgres
+psql
+alter user bacula with password 'bacula';
+alter role
+q
+exit
+
+
+>>> Iniciar o bacula <<<
+bacula start
+Se tudo ocorrer bem, o bacula iniciará sem problemas
