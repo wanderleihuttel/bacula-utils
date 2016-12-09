@@ -11,6 +11,8 @@ apt-get update
 >>> Pacotes necessários para compilação padrão + alguns utilitários <<<
 apt-get install vim make gcc build-essential libpq5 perl unp mc mtx libreadline6 libreadline6-dbg libreadline-gplv2-dev lzop liblzo2-dev python-lzo sudo gawk gdb libacl1 libacl1-dev git sysv-rc-conf ntfs-3g cifs-utils postfix mailutils
 
+>>> Pacotes necessários para habilitar o BAT <<<
+apt-get install qt4-dev-tools qt4-qtconfig  libqt4-core libqt4-dev libqwt5-qt4 libqwt5-qt4-dev pkg-config
 
 >>> Pacotes do PHP <<<
 apt-get install php5 php5-gd php5-dev php5-mcrypt php5-curl
