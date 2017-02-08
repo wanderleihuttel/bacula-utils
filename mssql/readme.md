@@ -1,4 +1,4 @@
-## Backup de Banco de Dados MSSQL Server 2008 / 2012 using Bacula
+## Backup de Banco de Dados MSSQL Server 2008 / 2012 usando o Bacula
 
 ### Copiar os arquivos para o diretório scripts
 ```
