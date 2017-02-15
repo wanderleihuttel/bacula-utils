@@ -33,7 +33,7 @@ cd /usr/src
 wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/7.4.4/bacula-7.4.4.tar.gz
 
 *Utilizando git (sempre pega a versão mais recente)
-git clone -b Branch-7.4 http://git.bacula.org/bacula bacula
+git clone -b Branch-7.4 http://git.bacula.org/bacula.git bacula
 
 cd /usr/src/bacula/bacula
 * Comando de compilação para MySQL
