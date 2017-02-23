@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Copyright (C) 2000-2015 Kern Sibbald
+# License: BSD 2-Clause; see file LICENSE-FOSS
+#
+# shell script to create Bacula database(s)
+#
+
+bindir=/usr/bin
+db_name=bacula
+db_user=${db_user:-bacula}
+
+if $bindir/mysql $* -f <<END-OF-DATA
+USE ${db_name};
+
+DROP FUNCTION IF EXISTS human_size;
+
+DELIMITER ;;
+CREATE DEFINER=${db_user}@localhost FUNCTION human_size(bytes FLOAT) RETURNS varchar(20) CHARSET utf8
+BEGIN
+
+DECLARE n INT DEFAULT 1;
+
+LOOP
+    IF bytes < 1024 THEN
+        RETURN lpad(concat(round(bytes, 2), ' ', elt(n, 'Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB')),12,' ');
+    END IF;
+    SET bytes = bytes / 1024;
+    SET n = n + 1;
+END LOOP;
+
+END ;;
+DELIMITER ;
+
+END-OF-DATA
+then
+   echo "Creation of function 'human_size' succeeded."
+else
+   echo "Creation of function 'human_size' failed."
+fi
+exit 0

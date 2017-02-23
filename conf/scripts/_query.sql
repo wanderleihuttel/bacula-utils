@@ -16,12 +16,12 @@
 :List up to 20 places where a File is saved regardless of the directory
 *Enter Filename (no path):
 SELECT DISTINCT Job.JobId as JobId, Client.Name as Client,
-  Path.Path,Filename.Name,StartTime,Level,JobFiles,JobBytes
+  Path.Path,Filename.Name,StartTime,Level,JobFiles, human_size(JobBytes) as JobBytes
  FROM Client,Job,File,Filename,Path WHERE Client.ClientId=Job.ClientId
  AND JobStatus IN ('T','W') AND Job.JobId=File.JobId
  AND Path.PathId=File.PathId AND Filename.FilenameId=File.FilenameId
  AND Filename.Name='%1' 
- ORDER BY Job.StartTime LIMIT 20;
+ ORDER BY Job.EndTime DESC LIMIT 20;
 # 2
 :List where the most recent copies of a file are saved
 *Enter path with trailing slash:
@@ -42,7 +42,7 @@ SELECT DISTINCT Job.JobId,StartTime AS JobStartTime,VolumeName,Client.Name AS Cl
 # 3
 :List last 20 Full Backups for a Client
 *Enter Client name:
-SELECT DISTINCT Job.JobId,Client.Name AS Client,StartTime,JobFiles,JobBytes,
+SELECT DISTINCT Job.JobId,Client.Name AS Client,StartTime,JobFiles,human_size(JobBytes) as JobBytes,
   JobMedia.StartFile as VolFile,VolumeName
  FROM Client,Job,JobMedia,Media
  WHERE Client.Name='%1'
@@ -54,7 +54,7 @@ SELECT DISTINCT Job.JobId,Client.Name AS Client,StartTime,JobFiles,JobBytes,
 :List all backups for a Client after a specified time
 *Enter Client Name:
 *Enter time in YYYY-MM-DD HH:MM:SS format:
-SELECT DISTINCT Job.JobId,Client.Name as Client,Level,StartTime,JobFiles,JobBytes,VolumeName
+SELECT DISTINCT Job.JobId,Client.Name as Client,Level,StartTime,JobFiles,human_size(JobBytes) as JobBytes,VolumeName
  FROM Client,Job,JobMedia,Media
  WHERE Client.Name='%1'
  AND Client.ClientId=Job.ClientId
@@ -67,7 +67,7 @@ SELECT DISTINCT Job.JobId,Client.Name as Client,Level,StartTime,JobFiles,JobByte
 *Enter Client Name:
 SELECT DISTINCT Job.JobId as JobId,Client.Name as Client,
    FileSet.FileSet AS FileSet,Level,StartTime,
-   JobFiles,JobBytes,VolumeName
+   JobFiles,human_size(JobBytes) as JobBytes,VolumeName
  FROM Client,Job,JobMedia,Media,FileSet
  WHERE Client.Name='%1'
  AND Client.ClientId=Job.ClientId AND Job.Type='B'
@@ -147,11 +147,11 @@ SELECT Recycle,VolRetention,VolUseDuration,MaxVolJobs,MaxVolFiles,MaxVolBytes
  WHERE Name='%1';
 # 10
 :List total files/bytes by Job
-SELECT count(*) AS Jobs,sum(JobFiles) AS Files,sum(JobBytes) AS Bytes,Name AS Job
+SELECT count(*) AS Jobs,sum(JobFiles) AS Files, human_size(sum(JobBytes)) AS Bytes,Name AS Job
  FROM Job GROUP by Name;
 # 11
 :List total files/bytes by Volume
-SELECT count(*) AS Jobs,sum(JobFiles) AS Files,sum(JobBytes) AS Bytes,VolumeName
+SELECT count(*) AS Jobs,sum(JobFiles) AS Files, human_size(sum(JobBytes)) AS Bytes,VolumeName
  FROM Job,JobMedia,Media
  WHERE JobMedia.JobId=Job.JobId
  AND JobMedia.MediaId=Media.MediaId
@@ -167,17 +167,17 @@ SELECT Path.Path,Filename.Name FROM File,Filename,Path WHERE File.JobId=%1
 :List Jobs stored on a selected MediaId
 *Enter MediaId:
 SELECT DISTINCT Job.JobId,Job.Name,Job.StartTime,Job.Type,
-  Job.Level,Job.JobFiles,Job.JobBytes,Job.JobStatus
+  Job.Level,Job.JobFiles, human_size(Job.JobBytes) as Bytes,Job.JobStatus
  FROM JobMedia,Job
  WHERE JobMedia.JobId=Job.JobId
- AND JobMedia.MediaId=%1 
+ AND JobMedia.MediaId=%1
  ORDER by Job.StartTime;
 # 14  
 :List Jobs stored for a given Volume name
 *Enter Volume name:
 SELECT DISTINCT Job.JobId as JobId,Job.Name as Name,Job.StartTime as StartTime,
   Job.Type as Type,Job.Level as Level,Job.JobFiles as Files,
-  Job.JobBytes as Bytes,Job.JobStatus as Status
+  human_size(Job.JobBytes) as Bytes,Job.JobStatus as Status
  FROM Media,JobMedia,Job
  WHERE Media.VolumeName='%1'
  AND Media.MediaId=JobMedia.MediaId              
@@ -203,7 +203,7 @@ SELECT VolumeName AS Volume,VolMounts AS Mounts,VolErrors AS Errors,
 #  17
 :List Volumes Bacula thinks are eligible for the changer
 SELECT VolumeName,VolStatus,Storage.Name AS Location,
-   VolBytes/(1024*1024*1024) AS GB,MediaId,MediaType,Pool.Name AS Pool
+   human_size(VolBytes) as Bytes,MediaId,MediaType,Pool.Name AS Pool
    FROM Media,Pool,Storage
    WHERE Media.PoolId=Pool.PoolId
    AND Media.StorageId=Storage.StorageId
@@ -213,7 +213,7 @@ SELECT VolumeName,VolStatus,Storage.Name AS Location,
 # 18
 :List Volumes by Volume:
 SELECT VolumeName, Job.JobId as JobID, Job.Name as JobName, Job.StartTime as
-Start, sum(JobFiles) AS Files,sum(JobBytes) AS Bytes
+Start, sum(JobFiles) AS Files, lpad(human_size(sum(JobBytes)),10,' ') AS Bytes
  FROM Job,JobMedia,Media
  WHERE JobMedia.JobId=Job.JobId
  AND JobMedia.MediaId=Media.MediaId
@@ -222,7 +222,7 @@ Start, sum(JobFiles) AS Files,sum(JobBytes) AS Bytes
 # 19
 :List Volumes by Jobs:
 SELECT Job.Name as JobName, Job.JobId as JobID, VolumeName, Job.StartTime as
-Start, sum(JobFiles) AS Files,sum(JobBytes) AS Bytes
+Start, sum(JobFiles) AS Files,human_size(sum(Job.JobBytes)) AS Bytes
  FROM Job,JobMedia,Media
  WHERE JobMedia.JobId=Job.JobId
  AND JobMedia.MediaId=Media.MediaId
@@ -232,11 +232,38 @@ Start, sum(JobFiles) AS Files,sum(JobBytes) AS Bytes
 :List Volumes for a jobname:
 *Enter Job name:
 SELECT Job.Name as JobName, Job.JobId as JobID, VolumeName, Job.StartTime as
-Start, sum(JobFiles) AS Files,sum(JobBytes) AS Bytes
+Start, sum(JobFiles) AS Files, human_size(sum(JobBytes)) AS Bytes
  FROM Job,JobMedia,Media
  WHERE Job.Name='%1'
  AND JobMedia.JobId=Job.JobId
  AND JobMedia.MediaId=Media.MediaId
  GROUP by VolumeName, Job.JobID, Job.Name, Job.StartTime
  ORDER by JobName, Start;
-
+# 21
+:List Counters
+SELECT Counters.Counter, Counters.MinValue, Counters.MaxValue, Counters.CurrentValue  FROM Counters;
+# 22
+:List JobTotals
+SELECT  count(*) AS Jobs,sum(JobFiles) AS Files, Type, human_size(sum(JobBytes)) AS JobBytes, Name AS Job FROM Job WHERE Type in ('B','R') GROUP BY Name;
+SELECT count(*) AS Jobs,sum(JobFiles) AS Files, Type, human_size(sum(JobBytes)) AS JobBytes FROM Job WHERE Type in ('B','R') GROUP BY Type;
+# 23
+:Find localization of File in JobId
+*Enter JobID:
+*Enter Filename:
+select A.JobId, cast(D.Name as char) as JobName, cast(concat(C.Path, B.Name) as char) as Filename
+from File A
+left join Filename B on (A.FilenameId = B.FilenameId)
+left join Path C on (A.PathId = C.PathId)
+left join Job D on (A.JobId = D.JobId)
+where A.JobId = '%1' and cast(concat(C.Path, B.Name) as char) like lower('%2');
+# 24
+:List Jobs where a given File is saved
+*Enter client name:
+*Enter Filename (without path):
+*Enter Path or leave empty:
+SELECT Job.JobId as JobId,cast(CONCAT(Path.Path,Filename.Name) as char) as Name, StartTime,cast(Type as char) as JobType, cast(JobStatus as char) as JobStatus,JobFiles,JobBytes
+FROM Client,Job,File,Filename,Path
+WHERE Client.Name='%1' AND Client.ClientId=Job.ClientId AND Job.JobId=File.JobId
+AND File.FileIndex > 0 AND Path.PathId=File.PathId AND Filename.FilenameId=File.FilenameId
+AND Filename.Name='%2' and Path.Path like '%3%'
+ORDER BY StartTime DESC limit 100;
