@@ -255,7 +255,7 @@ from File A
 left join Filename B on (A.FilenameId = B.FilenameId)
 left join Path C on (A.PathId = C.PathId)
 left join Job D on (A.JobId = D.JobId)
-where A.JobId = '%1' and cast(concat(C.Path, B.Name) as char) like lower('%2');
+where A.JobId = '%1' and cast(concat(C.Path, B.Name) as char) like concat('%',lower('%2'),'%');
 # 24
 :List Jobs where a given File is saved
 *Enter client name:
