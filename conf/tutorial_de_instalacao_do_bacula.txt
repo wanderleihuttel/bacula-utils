@@ -1,12 +1,14 @@
 #####################################################################################
-# Passos para Instalação do Bacula via Compilação em Debian 8.4                     #
+# Passos para Instalação do Bacula via Compilação em Debian/Ubuntu                  #
 # MySQL e PostgreSQL                                                                #
 # Autor: Wanderlei Hüttel                                                           #
-# Data atualização:  15/03/2016                                                     #
+# Data atualização:  17/03/2016                                                     #
 #####################################################################################
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
+* Este tutorial foi testado em Debian e Ubuntu.
+
 
 +-----------------------------------------------------------------------------------+
 | >>> Atualizar a lista dos pacotes <<<                                             |
@@ -19,7 +21,8 @@ apt-get update
 +-----------------------------------------------------------------------------------+
 apt-get install vim make gcc build-essential libpq5 perl unp mc mtx libreadline6 \
 libreadline6-dbg libreadline-gplv2-dev lzop liblzo2-dev python-lzo sudo gawk gdb \
-libacl1 libacl1-dev git sysv-rc-conf ntfs-3g cifs-utils postfix mailutils lsscsi
+libacl1 libacl1-dev git sysv-rc-conf ntfs-3g cifs-utils postfix mailutils lsscsi \
+apache2 libapache2-mod-php
 *Quando solicitar a configuração do postfix, deixar como "Site da Internet" e o Nome 
 do email do sistema como "localhost".
 
@@ -32,17 +35,24 @@ libqwt5-qt4-dev pkg-config
 
 
 +-----------------------------------------------------------------------------------+
-| >>> Pacotes do PHP (necessários para Webacula e Bacula-Web) <<<                   |
-+-----------------------------------------------------------------------------------+
-apt-get install php5 php5-gd php5-dev php5-mcrypt php5-curl
-
-
-+-----------------------------------------------------------------------------------+
 | >>> Pacotes necessários para utilizar o banco de dados MySQL <<<                  |
 +-----------------------------------------------------------------------------------+
 * Cuidado com senhas com caractes especiais, pois podem apresentar problemas na 
 criação dos scripts. Se for uma instalação fresca, prefira deixar a senha em branco.
 apt-get install mysql-server libmysqlclient-dev php5-mysqlnd
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes necessários para utilizar o banco de dados MariaDB <<<                |
++-----------------------------------------------------------------------------------+
+*Lembrando que o MariaDB não é homolagago pelo Bacula, porém funciona.
+apt-get install mariadb-server libmariadbd-dev libmariadb-client-lgpl-dev \
+libmariadb-client-lgpl-dev-compat
+
+apt-get install libmysqlclient-dev php-mysqlnd
+*Caso opte pelo MariaDB, é recomendado criar um link simbólico  para facilitar a 
+compilação:
+ln -s /usr/include/mariadb /usr/include/mysql
 
 
 +-----------------------------------------------------------------------------------+
@@ -53,11 +63,20 @@ postgresql-server-dev-9.4 php5-pgsql
 
 
 +-----------------------------------------------------------------------------------+
+| >>> Pacotes do PHP (necessários para Webacula e Bacula-Web) <<<                   |
++-----------------------------------------------------------------------------------+
+apt-get install php5 php5-gd php5-dev php5-mcrypt php5-curl
+
+
++-----------------------------------------------------------------------------------+
 | >>> Baixando e Compilando o Fonte <<<                                             |
 +-----------------------------------------------------------------------------------+
 cd /usr/src
 *Utilizando wget 
-wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/7.4.5/bacula-7.4.5.tar.gz
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/7.4.7/bacula-7.4.7.tar.gz
+tar xvzf bacula-7.4.7.tar.gz
+cd bacula-7.4.7
+
 
 *Utilizando git (sempre pega a versão mais recente, porém as vezes pode conter alguns bugs)
 git clone -b Branch-7.4 http://git.bacula.org/bacula.git bacula
@@ -72,7 +91,7 @@ cd /usr/src/bacula/bacula
 * Utilize os comandos de acordo com o banco escolhido.                                              *
 *                                                                                                   *
 *****************************************************************************************************
-* Comando de pré-compilação para MySQL
+* Comando de pré-compilação para MySQL/MariaDB
 ./configure \
  --enable-smartalloc \
  --with-mysql \
@@ -150,13 +169,9 @@ mysql -u root
 *Caso tenha definido uma senha
 mysql -u root -p
 
-grant all on *.* to 'root'@'%';
 grant all on *.* to 'root'@'localhost';
-grant all on *.* to 'root'@'127.0.0.1';
 create user bacula;
-grant all on *.* to 'bacula'@'%' identified by 'bacula' with grant option;
 grant all on *.* to 'bacula'@'localhost' identified by 'bacula' with grant option;
-grant all on *.* to 'bacula'@'127.0.0.1' identified by 'bacula' with grant option;
 GRANT SELECT ON mysql.proc to 'bacula';
 flush privileges;
 quit
@@ -188,6 +203,7 @@ cd /etc/bacula/scripts
 +-----------------------------------------------------------------------------------+
 | >>> Criar as tabelas do bacula no PostgreSQL <<<                                  |
 +-----------------------------------------------------------------------------------+
+chmod 775 /etc/bacula
 cd /etc/bacula/scripts
 chown postgres create_postgresql_database
 chown postgres make_postgresql_tables
@@ -216,7 +232,7 @@ su postgres
 psql
 alter user bacula with password 'bacula';
 alter role
-q
+\q
 exit
 
 
@@ -232,6 +248,3 @@ Connecting to Director 192.168.1.1:9101
 1000 OK: 102 bacula-dir Version: 7.4.6 (10 March 2017)
 Enter a period to cancel a command.
 *
-
-
-
