@@ -104,7 +104,7 @@ cd /usr/src/bacula/bacula
  --sbindir=/usr/sbin \
  --with-scriptdir=/etc/bacula/scripts \
  --with-plugindir=/etc/bacula/plugins \
- --with-pid-dir=/etc/bacula/working \
+ --with-pid-dir=/var/run \
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
@@ -128,7 +128,7 @@ cd /usr/src/bacula/bacula
  --sbindir=/usr/sbin \
  --with-scriptdir=/etc/bacula/scripts \
  --with-plugindir=/etc/bacula/plugins \
- --with-pid-dir=/etc/bacula/working \
+ --with-pid-dir=/var/run \
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
