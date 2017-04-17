@@ -5,7 +5,7 @@
 
 ```
 apt-get update
-apt-get postfix mailutils install libsasl2-modules
+apt-get install postfix mailutils libsasl2-modules
 
 Durante a instalação vai abrir um prompt perguntando qual o tipo de configuração de email:
 - Selecione Internet
