@@ -21,7 +21,7 @@ if [ "$confirm" == "s" ] || [ "$confirm" == "S" ]; then
    for volname in $(echo "list media pool=$pool" | bconsole  | grep "|" | grep -v "MediaId" | grep "$volstatus" | cut -d "|" -f3 | sed 's/ //g'); do 
       echo "delete volume=$volname pool=$pool yes" ;
       # Descomentar a linha abaixo para efetuar a exclusão dos volumes no catálogo
-      #echo "delete volume=$volname pool=$pool yes | bconsole" ;
+      #echo "delete volume=$volname pool=$pool yes" | bconsole ;
 
       # Se precisar excluir fisicamente pode descomentar o comando abaixo
       # rm -f /backup/$volname
