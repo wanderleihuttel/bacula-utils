@@ -2,14 +2,14 @@ Passos para instalação do Bacula via compilação no Debian/Ubuntu
 ================================================================
 
 
-**Autor:** Wanderley Hüttel
+**Autor:** [Wanderley Hüttel](https://www.linkedin.com/in/wanderlei-h%C3%BCttel-24911192/ "Perfil no Linkedin")
 
-**Data da Atualização:**17/03/2016
+**Última Atualização:** 17/03/2016
 
 **MySQL e PostgreSQL**
 
 
-> **Atenção!**
+> **Observações!**
 
 > Leia tudo antes de começar a instalar, só depois inicie a instalação.
 
