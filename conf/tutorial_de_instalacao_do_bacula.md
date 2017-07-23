@@ -1,21 +1,29 @@
 Passos para instalação do Bacula via compilação no Debian/Ubuntu
-========================================
+================================================================
 
-** MySQL e PostgreSQL**
+
 **Autor:** Wanderley Hüttel
+
 **Data da Atualização:**17/03/2016
 
+**MySQL e PostgreSQL**
+
+
 > **Atenção!**
+
 > Leia tudo antes de começar a instalar, só depois inicie a instalação.
+
 > Se você obtiver algum erro durante a instalação, revise todo o material e verifique se não esqueceu de nenhum passo.
+
 > Este tutorial foi testado no Debian e Ubuntu.
 
 
-#### Vamos ao Tutorial
+Vamos ao Tutorial
+=================
 
-**Atualize a lista de pacotes:**
+**Atualize a lista de pacotes e os pacotes já instalados:**
 ```
-apt update
+apt update && apt upgrade -y
 ```
 
 **Pacotes necessários para a compilação padrão + alguns utilitários:**
@@ -86,8 +94,9 @@ Acesse o diretório criado:
 cd bacula
 ```
 
-> Agora é preciso definir o banco de dados que será utilizado, MySQL ou PostgreSQL.
-> Utilize os comandos de acordo com o banco escolhido.
+> **Agora é preciso definir o banco de dados que será utilizado, MySQL ou PostgreSQL.**
+
+> **Utilize os comandos de acordo com o banco escolhido.**
 
 **Comando de pré-compilação para MySQL/MariaDB:**
 ```
