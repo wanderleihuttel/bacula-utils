@@ -4,7 +4,7 @@
 # Function to convert bytes for human readable
 b2h(){
     # spotted script @: http://www.linuxjournal.com/article/9293?page=0,1
-    slist=" bytes, kb, mb, gb, tb, pb, eb, zb, yb"
+    slist=" Bytes, KB, MB, GB, TB, PB, EB, ZB, YB"
     power=1
     val=$( echo "scale=2; $1 / 1" | bc)
     vint=$( echo $val / 1024 | bc )
@@ -34,8 +34,7 @@ log="/var/log/bacula/telegram.log"
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # SQL query to get data from Job (MySQL)
-query_mysql="select Job.Name, Job.JobId,(select Client.Name from Client where Client.ClientId = Job.ClientId) as Client, Job.JobBytes, Job.JobFiles, case when Job.Level = 'F' then 'Full' when Job.Level = 'I' then 'Incremental' when Job.Level = 'D' then 'Differential' end as Level, (select Pool.Name from Pool where Pool.PoolId = Job.PoolId) as Pool, (select Storage.Name  from JobMedia left join Media on (Media.MediaId = JobMedia.MediaId) left join Storage on (Media.StorageId = Storage.StorageId) where JobMedia.JobId = Job.JobId limit 1 ) as Storage, date_format( Job.StartTime , '%d/%m/%Y %H:%i:%s' ) as StartTime, date_format( Job.EndTime , '%d/%m/%Y %H:%i:%s' ) as EndTime, sec_to_time(TIMESTAMPDIFF(SECOND,Job.StartTime,Job.EndTime)) as Duration, Job.JobStatus, (select Status.JobStatusLong from Status where Job.JobStatus = Status.JobStatus) as JobStatusLong
-from Job where Job.JobId=$1;"
+query_mysql="select Job.Name, Job.JobId,(select Client.Name from Client where Client.ClientId = Job.ClientId) as Client, Job.JobBytes, Job.JobFiles, case when Job.Level = 'F' then 'Full' when Job.Level = 'I' then 'Incremental' when Job.Level = 'D' then 'Differential' end as Level, (select Pool.Name from Pool where Pool.PoolId = Job.PoolId) as Pool, (select Storage.Name  from JobMedia left join Media on (Media.MediaId = JobMedia.MediaId) left join Storage on (Media.StorageId = Storage.StorageId) where JobMedia.JobId = Job.JobId limit 1 ) as Storage, date_format( Job.StartTime , '%d/%m/%Y %H:%i:%s' ) as StartTime, date_format( Job.EndTime , '%d/%m/%Y %H:%i:%s' ) as EndTime, sec_to_time(TIMESTAMPDIFF(SECOND,Job.StartTime,Job.EndTime)) as Duration, Job.JobStatus, (select Status.JobStatusLong from Status where Job.JobStatus = Status.JobStatus) as JobStatusLong from Job where Job.JobId=$1;"
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # SQL query to get data from Job (PostgreSQL)
@@ -112,6 +111,7 @@ while [ ${count} -le 20 ]; do
    echo "$(date +%d/%m/%Y\ %H:%M:%S) - ${messagelog}" >> ${log}
    ${curl} -s "${url}" > /dev/null
    ret=$?
+
    if [ ${ret} -eq 0 ]; then
      echo "$(date +%d/%m/%Y\ %H:%M:%S) - Attempt ${count} executed successfully!" >> ${log}
 #     url="https://api.telegram.org/bot${api_token}/getUpdates"
