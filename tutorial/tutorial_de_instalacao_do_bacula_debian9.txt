@@ -1,0 +1,282 @@
+#####################################################################################
+# Passos para Instalação do Bacula via Compilação em Debian 9                       #
+# MySQL e PostgreSQL                                                                #
+# Autor: Wanderlei Hüttel                                                           #
+# Data atualização:  28/09/2017                                                     #
+#####################################################################################
+* Leia tudo antes de começar a instalar só depois inicie a instalação. 
+* Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
+esqueceu nenhum passo.
+* Este tutorial foi testado em Debian 9.1 em 28/09/2017
+
++-----------------------------------------------------------------------------------+
+| >>> Atualizar a lista dos pacotes <<<                                             |
++-----------------------------------------------------------------------------------+
+apt-get update
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes necessários para compilação padrão <<<                                |
++-----------------------------------------------------------------------------------+
+apt-get install vim make gcc build-essential perl unp mc mtx libreadline7 \
+libreadline7-dbg libreadline-gplv2-dev lzop liblzo2-dev python-lzo sudo gawk gdb \
+libacl1 libacl1-dev lsscsi 
+
+
++-----------------------------------------------------------------------------------+
+| >>> Configurações vim e bashrc <<< (OPCIONAL)                                     |
++-----------------------------------------------------------------------------------+
+Digitar o comando abaixo no terminal e selecionar a opção que contém "/usr/bin/vim.basic", 
+digitando o respectivo número.
+update-alternatives --config editor
+
+# Editor vim colorido
+vim /etc/vim/vimrc
+incluir as seguintes linhas no arquivo acima
+syntax on
+:highlight comment ctermfg=lightblue
+
+# Desabilitar modo visual do VIM
+vim ~/.vimrc
+set mouse-=a
+
+# Habilitar modo colorido no bash
+vim /root/.bashrc
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -l'
+alias l='ls $LS_OPTIONS -lA'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias cls=clear
+
+# Recarregar o profile 
+. ~/.profile
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes necessários para habilitar o BAT <<<                                  |
++-----------------------------------------------------------------------------------+
+apt-get install qt4-dev-tools qt4-qtconfig  libqt4-dev libqwt5-qt4 \
+libqwt5-qt4-dev pkg-config
+* Incluir no comando de compilação a opção --enable-bat 
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes necessários para utilizar o banco de dados MySQL <<<                |
++-----------------------------------------------------------------------------------+
+Por padrão o Debian 9 não instala mais o MySQL, mas sim o MariaDB.
+Então, caso queira habilitar o MySQL siga os passos abaixo:
+
+*Adicionar a chave pública como confiável:
+wget -O /tmp/RPM-GPG-KEY-mysql https://repo.mysql.com/RPM-GPG-KEY-mysql --no-check-certificate
+apt-key add /tmp/RPM-GPG-KEY-mysql
+
+*Habilitar os seguintes repositórios em /etc/apt/source.list
+deb http://repo.mysql.com/apt/debian/ stretch mysql-apt-config
+deb http://repo.mysql.com/apt/debian/ stretch mysql-5.7
+deb http://repo.mysql.com/apt/debian/ stretch mysql-tools
+deb http://repo.mysql.com/apt/debian/ stretch mysql-tools-preview
+deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7
+
+apt-get update
+apt-get install mysql-community-server libmysqlclient-dev
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes necessários para utilizar o banco de dados MariaDB <<<                |
++-----------------------------------------------------------------------------------+
+* Cuidado com senhas com caractes especiais, pois podem apresentar problemas na 
+criação dos scripts. Se for uma instalação fresca, prefira deixar a senha em branco.
+
+*Lembrando que o MariaDB não é homolagago pelo Bacula, porém funciona.
+apt-get install mariadb-server libmariadbd-dev libmariadbclient-dev \
+libmariadbclient-dev-compat
+
+
++-----------------------------------------------------------------------------------+
+| >>> Pacotes para utilizar o banco de dados PostgreSQL <<<                         |
++-----------------------------------------------------------------------------------+
+apt-get install postgresql-9.6 postgresql-contrib-9.6 postgresql-client-9.6 \
+postgresql-server-dev-9.6
+
+
++-----------------------------------------------------------------------------------+
+| >>> Baixando e Compilando o Fonte <<<                                             |
++-----------------------------------------------------------------------------------+
+cd /usr/src
+*Utilizando wget 
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.0.4/bacula-9.0.4.tar.gz
+tar xvzf bacula-9.0.4.tar.gz
+cd bacula-9.0.4
+
+*Utilizando git (sempre pega a versão mais recente, porém as vezes pode conter alguns bugs)
+git clone -b Branch-9.0 http://git.bacula.org/bacula.git bacula
+
+cd /usr/src/bacula/bacula
+
+
+********************************************************************************************************
+*                                                                                                      *
+* Nessa parte abaixo é preciso definir o banco de dados que será utilizado MySQL/MariaDB ou PostgreSQL *
+* Utilize os comandos de acordo com o banco escolhido.                                                 *
+* Na versão 9 do Debian ainda não é compatível a nova versão do OpenSSL-1.1, então não habilitamos     *
+* --without-openssl                                                                                    *
+*                                                                                                      *
+********************************************************************************************************
+
+* Comando de pré-compilação para MySQL/MariaDB
+./configure \
+ --enable-smartalloc \
+ --with-mysql \
+ --with-db-user=bacula \
+ --with-db-password=bacula \
+ --with-db-port=3306 \
+ --without-openssl \
+ --with-readline=/usr/include/readline \
+ --sysconfdir=/etc/bacula \
+ --bindir=/usr/bin \
+ --sbindir=/usr/sbin \
+ --with-scriptdir=/etc/bacula/scripts \
+ --with-plugindir=/etc/bacula/plugins \
+ --with-pid-dir=/var/run \
+ --with-subsys-dir=/etc/bacula/working \
+ --with-working-dir=/etc/bacula/working \
+ --with-bsrdir=/etc/bacula/bootstrap \
+ --with-systemd \
+ --disable-conio \
+ --disable-nls \
+ --with-logdir=/var/log/bacula \
+ --with-dump-email=email@dominio.com.br \
+ --with-job-email=email@dominio.com.br
+
+* Comando de pré-compilação para PostgreSQL
+./configure \
+ --enable-smartalloc \
+ --with-postgresql \
+ --with-db-user=bacula \
+ --with-db-password=bacula \
+ --with-db-port=5432 \
+ --without-openssl \
+ --with-readline=/usr/include/readline \
+ --sysconfdir=/etc/bacula \
+ --bindir=/usr/bin \
+ --sbindir=/usr/sbin \
+ --with-scriptdir=/etc/bacula/scripts \
+ --with-plugindir=/etc/bacula/plugins \
+ --with-pid-dir=/var/run \
+ --with-subsys-dir=/etc/bacula/working \
+ --with-working-dir=/etc/bacula/working \
+ --with-bsrdir=/etc/bacula/bootstrap \
+ --with-systemd \
+ --disable-conio \
+ --disable-nls \
+ --with-logdir=/var/log/bacula \
+ --with-dump-email=email@dominio.com.br \
+ --with-job-email=email@dominio.com.br
+
+*Comando para efetuar a compilação e instalação
+make -j 8
+make install
+make install-autostart
+
+
+*****************************************************************************************************
+*                                                                                                   *
+* Passos para criação do banco de dados, usuários e  permisssões MySQL/MariaDB                      *
+*                                                                                                   *
+*****************************************************************************************************
+
++-----------------------------------------------------------------------------------+
+| >>> Configurar os usuários no MySQL/MariaDB <<<                                   |
++-----------------------------------------------------------------------------------+
+*Caso você não tenha definido uma senha:
+mysql -u root
+
+*Caso tenha definido uma senha
+mysql -u root -p
+
+GRANT ALL ON *.* TO 'root'@'localhost';
+CREATE USER bacula;
+GRANT ALL ON *.* TO 'bacula'@'localhost' IDENTIFIED BY 'bacula' WITH GRANT OPTION;
+GRANT SELECT ON mysql.proc TO 'bacula';
+FLUSH PRIVILEGES;
+quit
+/etc/init.d/mysql restart
+
+
++-----------------------------------------------------------------------------------+
+| >>> Criar as tabelas do bacula no MySQL/MariaDB <<<                               |
++-----------------------------------------------------------------------------------+
+cd /etc/bacula/scripts
+* Caso não tenha definido uma senha
+./create_mysql_database
+./make_mysql_tables
+./grant_mysql_privileges
+
+* Caso não tenha definido uma senha
+./create_mysql_database -u root -p
+./make_mysql_tables -u root -p
+./grant_mysql_privileges -u root -p
+
+
+*****************************************************************************************************
+*                                                                                                   *
+* Passos para criação do banco de dados, usuários e  permisssões PostgreSQL                         *
+*                                                                                                   *
+*****************************************************************************************************
+
++-----------------------------------------------------------------------------------+
+| >>> Definindo a senha do usuário bacula no PostgreSQL <<<                         |
++-----------------------------------------------------------------------------------+
+su postgres
+psql
+alter user bacula with password 'bacula';
+\q
+exit
+
+
++-----------------------------------------------------------------------------------+
+| >>> Criar as tabelas do bacula no PostgreSQL <<<                                  |
++-----------------------------------------------------------------------------------+
+chmod 775 /etc/bacula
+cd /etc/bacula/scripts
+chown postgres create_postgresql_database && chown postgres make_postgresql_tables && \
+chown postgres grant_postgresql_privileges && chown postgres drop_postgresql_database && \
+chown postgres update_postgresql_tables
+su postgres
+./create_postgresql_database
+./make_postgresql_tables
+./grant_postgresql_privileges
+exit
+
+
++-----------------------------------------------------------------------------------+
+| >>> Configurar o acesso ao PostgreSQL pelo bacula <<<                             |
++-----------------------------------------------------------------------------------+
+Editar o arquivo /etc/postgresql/9.6/main/postgresql.conf e alterar a linha abaixo:
+de:    # listen_addresses = 'localhost'
+para:  listen_addresses = '*'
+
+Editar o arquivo /etc/postgresql/9.6/main/pg_hba.conf e alterar a seguinte linha:
+de:   local   all             all                                     peer
+para: local   all             all                                     md5
+
+*Reiniciar o PostgreSQL
+/etc/init.d/postgresql restart
+
+
++-----------------------------------------------------------------------------------+
+| >>> Iniciar o bacula <<<                                                          |
++-----------------------------------------------------------------------------------+
+bacula start
+Se tudo ocorrer bem, o bacula iniciará sem problemas e você pode acessar com o bconsole,
+e verá uma tela conforme abaixo
+
+root@bacula:/# bconsole
+Connecting to Director 192.168.1.1:9101
+1000 OK: 103 debian91-dir Version: 9.0.4 (06 September 2017)
+Enter a period to cancel a command.
+*

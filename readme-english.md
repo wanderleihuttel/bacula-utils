@@ -13,3 +13,5 @@
 [Postfix](/postfix) - Configure Postfix to send mail using an external SMTP server
 
 [Telegram scripts](/telegram) - Scripts to send messages of jobs using telegram
+
+[Tutorial](/tutorial) - Tutorial to install Bacula and Webacula
