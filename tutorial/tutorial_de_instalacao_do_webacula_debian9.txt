@@ -88,7 +88,7 @@ cd /usr/src/webacula/install/MySql
 +-----------------------------------------------------------------------------------+
 | >>> Criar as tabelas do Webacula no PostgreSQL <<<                                |
 +-----------------------------------------------------------------------------------+
-cd /var/www/webacula/install/PostgreSql/
+cd /usr/src/webacula/install/PostgreSql
 chown postgres 10_make_tables.sh && chown postgres 20_acl_make_tables.sh && \
 chown postgres 30_grant_postgresql_privileges.sh && chown postgres 40_delete_postgresql_tables.sh
 su postgres
@@ -124,8 +124,6 @@ bacula.bconsolecmd = "-n -c /etc/bacula/bconsole.conf"
 +-----------------------------------------------------------------------------------+
 cd /usr/src
 chown -R www-data.www-data /usr/src/webacula
-#chown www-data /sbin/bconsole
-#chown www-data /etc/bacula/bconsole.conf
 chmod 775 /etc/bacula
 chmod 777 /usr/src/webacula/data/cache
 
