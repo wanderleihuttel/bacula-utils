@@ -14,4 +14,4 @@
 
 [Telegram scripts](/telegram) - Scripts to send messages of jobs using telegram
 
-[Tutorial](/tutorial) - Tutorial to install Bacula and Webacula
+[Tutorial](/tutorial) - Tutorial to install Bacula, Webacula and Baculum
