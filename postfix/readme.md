@@ -1,5 +1,7 @@
 ## Configurar o Postfix para enviar emails usando um servidor SMTP externo
 
+Se for utilizar uma conta do gmail, é preciso habilitar os aplicativos menos seguros.  
+Mais detalhes no link: https://support.google.com/accounts/answer/6010255?hl=pt-BR
 
 ### Atualizar e instalar dependências
 
@@ -15,8 +17,8 @@ Durante a instalação vai abrir um prompt perguntando qual o tipo de configura�
 
 ### Modificar o arquivo /etc/postfix/main.cf e alterar as linhas abaixo
 ```
-myhostname = debian   # CHANGE ME
-relayhost = [smtp.dominio.com]:587 # ALTERAR
+myhostname = debian
+relayhost = [smtp.dominio.com]:587
 ```
 
 ### Modificar o arquivo /etc/postfix/sasl_passwd com as credenciais
