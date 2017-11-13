@@ -148,8 +148,7 @@ a2ensite webacula.conf
 +-----------------------------------------------------------------------------------+
 | >>> Conceder permissão para o usuário www-data executar o bconsole <<<            |
 +-----------------------------------------------------------------------------------+
-vim /etc/sudoers
-www-data ALL=NOPASSWD: /usr/sbin/bconsole
+echo "www-data ALL=NOPASSWD:/usr/sbin/bconsole" > /etc/sudoers.d/webacula
 service apache2 restart
 
 +-----------------------------------------------------------------------------------+
