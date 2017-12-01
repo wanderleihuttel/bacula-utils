@@ -7,6 +7,11 @@ esqueceu nenhum passo.
 * Este tutorial foi testado em Debian 9.1 em 28/09/2017
 O webacula com o PHP-7.0 tem alguns warnings que precisam ser corrigidos, a principio
 nada grave.
+* Nesta versão 7.5.3, foi removido o arquivo db.conf do diretório install, que era 
+utilizado para configurar as senhas do banco de dados para criação das tabelas. Agora
+a criação das tabelas do webacula é igual a criação das tabelas do próprio bacula, onde
+executa-se o script passando o usuário e senha após o nome do arquivo.
+* o usuário padrão é 'root' e a senha é 'bacula'
 
 Considerando que você já possuí o Bacula instalado
 
@@ -46,27 +51,11 @@ max_execution_time = 3600
 | >>> Efetuar o download da última versão do Webacula <<<                           |
 +-----------------------------------------------------------------------------------+
 Verificar qual é a última versão do Webacula em: https://github.com/wanderleihuttel/webacula/releases
-* A última versão na instalação do tutorial é a 7.5.2
+* A última versão na instalação do tutorial é a 7.5.3
 cd /usr/src/
-wget --no-check-certificate -c https://github.com/wanderleihuttel/webacula/archive/7.5.2.tar.gz
-tar xvzf 7.5.2.tar.gz
-mv webacula-7.5.2 webacula
-
-
-+-----------------------------------------------------------------------------------+
-| >>> Editar o arquivo /usr/src/webacula/install/db.conf <<<                        |
-+-----------------------------------------------------------------------------------+
-Preencher os campos com as credenciais do usuário do root do MySQL e com os dados do 
-banco de dados do bacula
-vim  /usr/src/webacula/install/db.conf
-
-db_name='bacula'
-db_user='root'
-db_pwd='123456'
-webacula_root_pwd=''
-
-* Deixar o campo 'webacula_root' vazio, o usuário padrão será 'root' e a senha é 'bacula'.
-É possível alterar a senha após efetuar o logon.
+wget --no-check-certificate -c https://github.com/wanderleihuttel/webacula/archive/7.5.3.tar.gz
+tar xvzf 7.5.3.tar.gz
+mv webacula-7.5.3 webacula
 
 
 +-----------------------------------------------------------------------------------+
