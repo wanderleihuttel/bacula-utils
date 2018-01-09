@@ -18,6 +18,15 @@ b2h(){
 }
 # end function 
 
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Is necessary to include in the Catalog Resource
+# the option "dbdriver" (psgql or mysql)
+# Catalog {
+#   ...
+#   dbdriver = "mysql" or dbdriver = "pgsql"
+#   ...
+#  }
+
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Config 
