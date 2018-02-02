@@ -11,7 +11,8 @@ nada grave.
 utilizado para configurar as senhas do banco de dados para criação das tabelas. Agora
 a criação das tabelas do webacula é igual a criação das tabelas do próprio bacula, onde
 executa-se o script passando o usuário e senha após o nome do arquivo.
-* o usuário padrão é 'root' e a senha é 'bacula'
+* o usuário padrão é 'root' e a senha é 'bacula' e pode ser alterada após o primeiro login
+* 
 
 Considerando que você já possuí o Bacula instalado
 
@@ -46,6 +47,7 @@ Editar o arquivo /etc/php/7.0/apache2/php.ini  and alterar a opção 'date.timez
 vim /etc/php5/apache2/php.ini
 date.timezone = America/Sao_Paulo
 max_execution_time = 3600
+
 
 +-----------------------------------------------------------------------------------+
 | >>> Efetuar o download da última versão do Webacula <<<                           |
@@ -85,6 +87,37 @@ su postgres
 ./20_acl_make_tables.sh
 ./30_grant_postgresql_privileges.sh
 exit
+
+
++-----------------------------------------------------------------------------------+
+| >>> Incluir os scripts para gerar o número de bytes copiados (>= 7.5.3 )     <<<  |
++-----------------------------------------------------------------------------------+
+* Como o Bacula salva as informações dos arquivos em um campo "criptografado",
+não é possível obter diretamente do banco essas informações, é preciso descriptografar primeiro.
+Esses scripts fazem isso, buscam as informações de cada arquivo, descriptografa, e salva 
+em uma tabela do Webacula (webacula_job_size). Como ele busca dados pelo bconsole, não é preciso
+se importar se o banco de dados é MySQL/MariaDB ou PostgreSQL.
+
+Copiar os scripts da pasta "webacula/install/scripts/" para a pasta de script do servidor, 
+e dar permissão a+x.
+
+Executar o script "_webacula_update_filesize_first.sh" para buscar o tamanho dos arquivos 
+dos backups antigos.
+
+Incluir no JobDefs a diretiva "RunScript" para executar o script de que busca o tamanho original
+do Backup após o término do mesmo, e reiniciar o Bacula.
+
+JobDefs {
+  ...
+  RunScript {
+     Command = "/etc/bacula/scripts/_webacula_update_filesize.sh %i %t %e"
+     RunsWhen = After
+     RunsOnClient = no
+     RunsOnFailure = yes
+     RunsOnSuccess = yes
+  }
+  ...
+}
 
 
 +-----------------------------------------------------------------------------------+
