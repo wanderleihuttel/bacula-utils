@@ -6,6 +6,8 @@
 
 [Firebird](/firebird) - Script para efetuar backup de banco de dados Firebird
 
+[Hyper-V](/hyper-v) - Script para efetuar backup a quente de VM Hyper-V usando Windows Backup
+
 [MySQL](/mysql) - Script para efetuar backup de banco de dados MySQL
 
 [MSSQL](/mssql) - Script para efetuar backup de banco de dados SQL Server 2008/2012

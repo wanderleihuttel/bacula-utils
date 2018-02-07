@@ -6,6 +6,8 @@
 
 [Firebird](/firebird) - Script to backup firebird databases
 
+[Hyper-V](/hyper-v) - Script to backup Hyper-V VM's using Windows Backup
+
 [MySQL](/mysql) - Script to backup MySQL databases
 
 [MSSQL](/mssql) - Script to backup SQL Server 2008/2012 databases
