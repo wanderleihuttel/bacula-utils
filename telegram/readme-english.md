@@ -57,6 +57,16 @@ JobDefs {
 }
 ```
 
+### Config dbdriver option in the Catalog Resource
+
+```
+Catalog {
+   ...
+   dbdriver = "mysql" or dbdriver = "pgsql"
+   ...
+}
+
+```
 
 ### Install dependencies
 
