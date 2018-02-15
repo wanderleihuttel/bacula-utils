@@ -25,23 +25,6 @@ Você vai receber uma saída no formato JSON, pegar o valor do 'id'.
 "username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
 "username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
 ```
-### Preencher os campos no script
-
-```
-DBHOST="localhost"
-DBPORT="3306"
-DBNAME="bacula"
-DBUSER="bacula"
-DBPASSWD="bacula"
-
-No PostgreSQL é possível criar um arquivo no diretório home como ".pgpass" com o seguinte conteúdo:
-(substituir com os valores corretos)
-hostname:port:database:username:password
-
-Alterar a permissão para somente o usuário ter acesso
-chmod 600 ~/.pgpass
-```
-
 
 ### Adicionar o recurso RunsScript na configuração do JobDefs
 
