@@ -24,23 +24,6 @@ Open in browser the URL. You will receive a JSON output, get the 'id' value.
 "username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
 "username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
 ```
-### Fill the fields in scripts
-
-```
-DBHOST="localhost"
-DBPORT="localhost"
-DBNAME="bacula"
-DBUSER="bacula"
-DBPASSWD="bacula"
-
-In postgresql is possible to create a file in home folder called ".pgpass" with the following content:
-(need replacement with correct values)
-hostname:port:database:username:password
-
-Set permission only for the owner
-chmod 600 ~/.pgpass
-```
-
 
 ### Add a RunsScript in JobDefs Resource
 
