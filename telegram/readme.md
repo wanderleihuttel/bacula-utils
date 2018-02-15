@@ -58,6 +58,17 @@ JobDefs {
 }
 ```
 
+### Configurar o dbdriver na configuração do Catálogo
+
+```
+Catalog {
+   ...
+   dbdriver = "mysql" ou dbdriver = "pgsql"
+   ...
+}
+
+```
+
 ### Instalar dependências
 
 ```
