@@ -14,11 +14,11 @@ echo ">>> Disabling any Baculum site ..."
 a2dissite baculum*
 
 echo ">>> Download the last version of Baculum ..."
-wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.0.5/bacula-gui-9.0.5.tar.gz
-tar -xzvf /usr/src/bacula-gui-9.0.5.tar.gz  -C /usr/src/
+wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.0.6/bacula-gui-9.0.6.tar.gz
+tar -xzvf /usr/src/bacula-gui-9.0.6.tar.gz  -C /usr/src/
 
 echo ">>> Copying Baculum files to /var/www/baculum ..."
-cp -R /usr/src/bacula-gui-9.0.5/baculum/ /var/www
+cp -R /usr/src/bacula-gui-9.0.6/baculum/ /var/www
 
 echo ">>> Create Baculum users (default user: admin | default password: admin ..."
 htpasswd -cb /var/www/baculum/protected/Web/baculum.users admin admin
