@@ -44,6 +44,9 @@ www-data ALL=NOPASSWD: /usr/sbin/bbconsjson\n\
 www-data ALL=NOPASSWD: /usr/sbin/bfdjson\n\
 www-data ALL=NOPASSWD: /usr/sbin/bsdjson" > /etc/sudoers.d/baculum
 
+echo ">>> Enable apache rewrite mode ..."
+a2enmod rewrite
+
 echo ">>> Restarting apache ..."
 systemctl restart apache2
 
