@@ -3,7 +3,7 @@
 # Automatic Baculum Install on Debian 9         #
 # Author:  Wanderlei Hüttel                     #
 # Email:   wanderlei.huttel@gmail.com           #
-# Version: 1.0 - 06/11/2017                     #
+# Version: 1.1 - 26/02/2018                     #
 #################################################
 
 # Based on script https://github.com/carlosedulucas/baculum/blob/master/instalação do baculum.txt
