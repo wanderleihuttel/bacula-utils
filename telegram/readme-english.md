@@ -25,7 +25,7 @@ Open in browser the URL. You will receive a JSON output, get the 'id' value.
 "username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
 ```
 
-### Add a RunsScript in JobDefs Resource
+### Add a RunsScript in JobDefs Resource in the file bacula-dir.conf
 
 ```
 JobDefs {
@@ -40,7 +40,7 @@ JobDefs {
 }
 ```
 
-### Config dbdriver option in the Catalog Resource
+### Config dbdriver option in the Catalog Resource in the file bacula-dir.conf
 
 ```
 Catalog {
