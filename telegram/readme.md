@@ -26,7 +26,7 @@ Você vai receber uma saída no formato JSON, pegar o valor do 'id'.
 "username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
 ```
 
-### Adicionar o recurso RunsScript na configuração do JobDefs no arquivo bacula-dir.conf
+### Incluir o parâmetro "RunsScript" na configuração do JobDefs no arquivo bacula-dir.conf
 
 ```
 JobDefs {
@@ -41,8 +41,7 @@ JobDefs {
 }
 ```
 
-### Configurar o dbdriver na configuração do Catálogo no arquivo bacula-dir.conf
-
+### Incluir o parâmetro "dbdriver" na configuração do Catálogo no arquivo bacula-dir.conf
 ```
 Catalog {
    ...
