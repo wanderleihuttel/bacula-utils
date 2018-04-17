@@ -39,7 +39,7 @@ the migration was finished with success!
 
 
 
-### Trobleshooting
+### Troubleshooting
 I had some problems in the 'Log' table, most of which was because of the wrong encoding, coming from Windows backup errors. 
 I manually edited the table, correcting the errors and tried to import only this table again.
 
