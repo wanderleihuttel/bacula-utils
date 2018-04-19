@@ -9,7 +9,7 @@
 4. Se o seu bacula foi instalado via pacotes, é interessante remover todos os pacotes referentes ao Bacula. 
 Utilizar o comando: **"apt-get remove nomepacote"**
 
-5. Se o bacula foi instalado via compilação, é interessante utiizar as mesmas opções utilizadas no **"./configure"**
+5. Se o bacula foi instalado via compilação, é interessante utilizar as mesmas opções utilizadas no **"./configure"**
 
 6. Efetuar o download do código fonte, e proseguir como se fosse uma instalação nova
 
