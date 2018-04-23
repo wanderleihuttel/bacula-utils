@@ -27,12 +27,19 @@ O resultado pode variar, mas vai ser algo parecido com isso:
 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 ````
 
-#### Alterar o arquivo mysql.cnf ou my.cnf
+#### Alterar o arquivo mysql.cnf ou my.cnf ou mariadb.cnf
 ````
-Procure o seu arquivo mysql.cnf ou my.cnf em /etc/mysql e abaixo da opção "[mysqld]", 
-inclua a configuração "sql_mode" e cole a linha gerada anteriormente, 
+Procure o seu arquivo com extensão ".cnf".
+Tente procurar com o seguinte comando: 
+grep -rn "\[mysqld\]" /etc/mysql
+Inclua a configuração "sql_mode" e cole a linha gerada anteriormente, 
 removendo as opções de "NO_ZERO_IN_DATE" e "NO_ZERO_DATE"
+
+Exemplo:
+[mysqld]
+...
 sql_mode = "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+...
 ````
 
 #### Reiniciar o MySQL/MariaDB
