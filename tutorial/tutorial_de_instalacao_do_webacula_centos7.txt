@@ -1,0 +1,189 @@
+#####################################################################################
+>>>>>  Passos para instalação do Webacula no CentOS-7                           <<<<<
+#####################################################################################
+* Leia tudo antes de começar a instalar só depois inicie a instalação. 
+* Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
+esqueceu nenhum passo.
+* Este tutorial foi testado em um máquina com CentOS-7-Minimal-x86_64 em 06/05/2018
+O webacula com o PHP-7.0 tem alguns warnings que precisam ser corrigidos, a principio
+nada grave.
+* Nesta versão 7.5.3, foi removido o arquivo db.conf do diretório install, que era 
+utilizado para configurar as senhas do banco de dados para criação das tabelas. Agora
+a criação das tabelas do webacula é igual a criação das tabelas do próprio bacula, onde
+executa-se o script passando o usuário e senha após o nome do arquivo.
+* o usuário padrão é 'root' e a senha é 'bacula' e pode ser alterada após o primeiro login
+* 
+
+Considerando que você já possuí o Bacula instalado
+
++-----------------------------------------------------------------------------------+
+| >>> Atualizar a lista dos pacotes <<<                                             |
++-----------------------------------------------------------------------------------+
+yum update
+
+
++-----------------------------------------------------------------------------------+
+| >>> Instalar dependências PHP <<<                                                 |
++-----------------------------------------------------------------------------------+
+yum install apache2 libapache2-mod-php php php-gd php-dev php-mcrypt php-curl
+
+
++-----------------------------------------------------------------------------------+
+| >>> Instalar dependências do MySQL/MariaDB <<<                                    |
++-----------------------------------------------------------------------------------+
+yum install php-mysqlnd
+
+
++-----------------------------------------------------------------------------------+
+| >>> Instalar dependências do PostgreSQL <<<                                       |
++-----------------------------------------------------------------------------------+
+yum install php-pgsql
+
+
++-----------------------------------------------------------------------------------+
+| >>> Configurar o PHP <<<                                                          |
++-----------------------------------------------------------------------------------+
+Editar o arquivo /etc/php.ini  and alterar a opção 'date.timezone' e 'max_execution_time'
+vim /etc/php.ini
+date.timezone = America/Sao_Paulo
+max_execution_time = 3600
+
+
++-----------------------------------------------------------------------------------+
+| >>> Efetuar o download da última versão do Webacula <<<                           |
++-----------------------------------------------------------------------------------+
+Verificar qual é a última versão do Webacula em: https://github.com/wanderleihuttel/webacula/releases
+* A última versão na instalação do tutorial é a 7.5.3
+cd /usr/src/
+wget --no-check-certificate -c https://github.com/wanderleihuttel/webacula/archive/7.5.3.tar.gz
+tar xvzf 7.5.3.tar.gz
+mv webacula-7.5.3 webacula
+
+
++-----------------------------------------------------------------------------------+
+| >>> Criar as tabelas do Webacula no MySQL/MariaDB <<<                             |
++-----------------------------------------------------------------------------------+
+cd /usr/src/webacula/install/MySql
+
+* Caso não tenha definido uma senha
+./10_make_tables.sh
+./20_acl_make_tables.sh
+/etc/bacula/scripts/grant_mysql_privileges
+
+* Caso não tenha definido uma senha
+./10_make_tables.sh -p
+./20_acl_make_tables.sh -p
+/etc/bacula/scripts/grant_mysql_privileges -p
+
+
++-----------------------------------------------------------------------------------+
+| >>> Criar as tabelas do Webacula no PostgreSQL <<<                                |
++-----------------------------------------------------------------------------------+
+cd /usr/src/webacula/install/PostgreSql
+chown postgres 10_make_tables.sh && chown postgres 20_acl_make_tables.sh && \
+chown postgres 30_grant_postgresql_privileges.sh && chown postgres 40_delete_postgresql_tables.sh
+su postgres
+./10_make_tables.sh
+./20_acl_make_tables.sh
+./30_grant_postgresql_privileges.sh
+exit
+
+
++-----------------------------------------------------------------------------------+
+| >>> Incluir os scripts para gerar o número de bytes copiados (>= 7.5.3 )     <<<  |
++-----------------------------------------------------------------------------------+
+* Como o Bacula salva as informações dos arquivos em um campo "criptografado",
+não é possível obter diretamente do banco essas informações, é preciso descriptografar primeiro.
+Esses scripts fazem isso, buscam as informações de cada arquivo, descriptografa, e salva 
+em uma tabela do Webacula (webacula_job_size). Como ele busca dados pelo bconsole, não é preciso
+se importar se o banco de dados é MySQL/MariaDB ou PostgreSQL.
+
+Copiar os scripts da pasta "webacula/install/scripts/" para a pasta de script do servidor, 
+e dar permissão a+x.
+
+Executar o script "_webacula_update_filesize_once.sh" para buscar o tamanho dos arquivos 
+dos backups antigos.
+
+Incluir no JobDefs a diretiva "RunScript" para executar o script de que busca o tamanho original
+do Backup após o término do mesmo, e reiniciar o Bacula.
+
+JobDefs {
+  ...
+  RunScript {
+     Command = "/etc/bacula/scripts/_webacula_update_filesize.sh %i %t %e"
+     RunsWhen = After
+     RunsOnClient = no
+     RunsOnFailure = yes
+     RunsOnSuccess = yes
+  }
+  ...
+}
+
+
++-----------------------------------------------------------------------------------+
+| >>> Editar o arquivo /usr/src/webacula/application/config.ini <<<                 |
++-----------------------------------------------------------------------------------+
+Preencher os campos com do usuário bacula do MySQL/MariaDB ou do PostgreSQL
+MySQL/MariaDB = PDO_MYSQL
+PostgreSQL    = PDO_PGSQL
+
+vim /usr/src/webacula/application/config.ini
+
+db.adapter         = PDO_PGSQL
+db.config.host     = localhost
+db.config.username = bacula
+db.config.password = bacula
+db.config.dbname   = bacula
+def.timezone = "America/Sao_Paulo"
+# Caminho dos binários do bacula e sudo. Caso esteja com problemas, deixe em branco a configuração do sudo
+bacula.sudo        = "/usr/bin/sudo"  
+bacula.bconsole    = "/sbin/bconsole"
+bacula.bconsolecmd = "-n -c /etc/bacula/bconsole.conf"
+
+
++-----------------------------------------------------------------------------------+
+| >>> Conceder permissão correta aos diretórios e arquivos <<<                      |
++-----------------------------------------------------------------------------------+
+cd /usr/src
+chown -R apache.apache /usr/src/webacula
+chmod 775 /etc/bacula
+chmod 777 /usr/src/webacula/data/cache
+
+
++-----------------------------------------------------------------------------------+
+| >>> Configurar o Apache <<<                                                       |
++-----------------------------------------------------------------------------------+
+Copiar o arquivo /usr/src/webacula/install/apache/webacula.conf para  /etc/httpd/conf.d
+cp /usr/src/webacula/install/apache/webacula.conf   /etc/httpd/conf.d/webacula.conf
+
+Editar o arquivo /etc/httpd/conf.d/webacula.conf e verificar se está liberado 
+para a sua faixa de rede. Por padrão é "Allow from 192.168.1."
+
+
++-----------------------------------------------------------------------------------+
+| >>> Conceder permissão para o usuário www-data executar o bconsole <<<            |
++-----------------------------------------------------------------------------------+
+echo "apache ALL=NOPASSWD:/usr/sbin/bconsole" > /etc/sudoers.d/webacula
+apachectl restart 
+
+
++-----------------------------------------------------------------------------------+
+| >>> Mover o diretório /usr/src/webacula para o diretório root do Apache <<<       |
++-----------------------------------------------------------------------------------+
+mv /usr/src/webacula  /var/www
+
+
++-----------------------------------------------------------------------------------+
+| >>> Liberar o acesso ao Webacula no Firewall <<<                                  |
++-----------------------------------------------------------------------------------+
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+systemctl restart firewalld
+
+
++-----------------------------------------------------------------------------------+
+| >>> Acessar o Webacula <<<                                                        |
++-----------------------------------------------------------------------------------+
+Acessar o webacula pelo endereço ip: http://192.168.1.x/webacula
+Usuário padrão: root
+Senha padrão:   bacula
