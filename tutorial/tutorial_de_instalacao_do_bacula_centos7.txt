@@ -2,12 +2,12 @@
 # Passos para Instalação do Bacula via Compilação em CentOS 7                       #
 # MySQL e PostgreSQL                                                                #
 # Autor: Wanderlei Hüttel                                                           #
-# Data atualização:  14/04/2018                                                     #
+# Data atualização:  09/05/2018                                                     #
 #####################################################################################
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
-* Este tutorial foi testado em uma instalação nova em CentOS 7
+* Este tutorial foi testado em uma instalação nova em CentOS-7-Minimal-x86_64
 
 +-----------------------------------------------------------------------------------+
 | >>> Desabilitar Selinux <<<                                                       |
@@ -22,6 +22,14 @@ sed -i "s/enforcing/disabled/g" /etc/sysconfig/selinux
 +-----------------------------------------------------------------------------------+
 firewall-cmd --permanent --zone=public --add-port=9101-9103/tcp
 service firewalld restart
+
+
++-----------------------------------------------------------------------------------+
+| >>> Instalar repositório epel <<<                                                 |
++-----------------------------------------------------------------------------------+
+* Executar 2 vezes
+yum install epel-release
+yum install epel-release
 
 
 +-----------------------------------------------------------------------------------+
