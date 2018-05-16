@@ -33,7 +33,7 @@ mkdir -p ${DST}/${DATE}
 # Create MySQL Backups
 for db in $(echo 'show databases;' | mysql --silent -u ${DBUSER} ${PASSWD} | egrep -v ${IGNREG}) ; do
    echo -n "Backing up ${db}... "
-   mysqldump --opt -u ${DBUSER} $db --routines --triggers > ${DST}/${DATE}/${db}.sql
+   mysqldump --opt -u ${DBUSER} $db --routines --triggers --databases --add-drop-database --complete-insert > ${DST}/${DATE}/${db}.sql
    echo "Done"
 done
 
