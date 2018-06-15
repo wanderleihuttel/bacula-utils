@@ -101,7 +101,7 @@ se importar se o banco de dados é MySQL/MariaDB ou PostgreSQL.
 Copiar os scripts da pasta "webacula/install/scripts/" para a pasta de script do servidor, 
 e dar permissão a+x.
 
-Executar o script "_webacula_update_filesize_first.sh" para buscar o tamanho dos arquivos 
+Executar o script "_webacula_update_filesize_once.sh" para buscar o tamanho dos arquivos 
 dos backups antigos.
 
 Incluir no JobDefs a diretiva "RunScript" para executar o script de que busca o tamanho original
