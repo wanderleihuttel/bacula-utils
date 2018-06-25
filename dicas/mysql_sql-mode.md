@@ -53,5 +53,5 @@ sql_mode = "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO
 SELECT @@GLOBAL.sql_mode; 
 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 
-Se não aparecer as opções NO_ZERO_IN_DATE e NO_ZERO_DATE é porque asconfigurações estão OK.
+Se não aparecer as opções NO_ZERO_IN_DATE e NO_ZERO_DATE é porque as configurações estão OK.
 ````
