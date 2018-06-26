@@ -1,13 +1,13 @@
 #####################################################################################
-# Passos para Instalação do Bacula via Compilação em Debian 9                       #
+# Passos para Instalação do Bacula via Compilação em Debian 9.X                       #
 # MySQL e PostgreSQL                                                                #
 # Autor: Wanderlei Hüttel                                                           #
-# Data atualização:  28/09/2017                                                     #
+# Data atualização:  26/06/2018                                                     #
 #####################################################################################
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
-* Este tutorial foi testado em Debian 9.1 em 28/09/2017
+* Este tutorial foi testado em Debian 9.4 em 26/06/2018
 
 +-----------------------------------------------------------------------------------+
 | >>> Atualizar a lista dos pacotes <<<                                             |
@@ -19,8 +19,8 @@ apt-get update
 | >>> Pacotes necessários para compilação padrão <<<                                |
 +-----------------------------------------------------------------------------------+
 apt-get install vim make gcc build-essential perl unp mc mtx libreadline7 \
-libreadline7-dbg libreadline-gplv2-dev lzop liblzo2-dev python-lzo sudo gawk gdb \
-libacl1 libacl1-dev lsscsi 
+libreadline7-dbg libreadline-gplv2-dev zlib1g-dev lzop liblzo2-dev python-lzo sudo \
+gawk gdb libacl1 libacl1-dev libssl-dev lsscsi apt-transport-https 
 
 
 +-----------------------------------------------------------------------------------+
@@ -74,12 +74,12 @@ Então, caso queira habilitar o MySQL siga os passos abaixo:
 wget -O /tmp/RPM-GPG-KEY-mysql https://repo.mysql.com/RPM-GPG-KEY-mysql --no-check-certificate
 apt-key add /tmp/RPM-GPG-KEY-mysql
 
-*Habilitar os seguintes repositórios em /etc/apt/source.list
-deb http://repo.mysql.com/apt/debian/ stretch mysql-apt-config
+*Habilitar os seguintes repositórios em /etc/apt/sources.list.d
+echo "deb http://repo.mysql.com/apt/debian/ stretch mysql-apt-config
 deb http://repo.mysql.com/apt/debian/ stretch mysql-5.7
 deb http://repo.mysql.com/apt/debian/ stretch mysql-tools
 deb http://repo.mysql.com/apt/debian/ stretch mysql-tools-preview
-deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7
+deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7" > /etc/apt/sources.list.d/mysql.list
 
 apt-get update
 apt-get install mysql-community-server libmysqlclient-dev
@@ -108,9 +108,9 @@ postgresql-server-dev-9.6
 +-----------------------------------------------------------------------------------+
 cd /usr/src
 *Utilizando wget 
-wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.0.4/bacula-9.0.4.tar.gz
-tar xvzf bacula-9.0.4.tar.gz
-cd bacula-9.0.4
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.0.8/bacula-9.0.8.tar.gz
+tar xvzf bacula-9.0.8.tar.gz
+cd bacula-9.0.8
 
 *Utilizando git (sempre pega a versão mais recente, porém as vezes pode conter alguns bugs)
 git clone -b Branch-9.0 http://git.bacula.org/bacula.git bacula
@@ -277,6 +277,6 @@ e verá uma tela conforme abaixo
 
 root@bacula:/# bconsole
 Connecting to Director 192.168.1.1:9101
-1000 OK: 103 debian91-dir Version: 9.0.4 (06 September 2017)
+1000 OK: 103 debian-dir Version: 9.0.8 (28 May 2018)
 Enter a period to cancel a command.
 *
