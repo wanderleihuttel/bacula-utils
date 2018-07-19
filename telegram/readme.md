@@ -54,5 +54,9 @@ Catalog {
 ### Instalar dependências
 
 ```
-apt-get install curl
+### Debian ###
+apt-get install curl bc
+
+### CentOS ###
+yum -y install curl bc
 ```
