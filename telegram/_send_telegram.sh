@@ -51,7 +51,7 @@ query_pgsql="select Job.Name, Job.JobId,(select Client.Name from Client where Cl
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Check database driver (PostgreSQL or MySQL)
-check_database=`echo "show catalog" | ${bconsole} | grep "pgsql" | wc -l`
+check_database=`echo "show catalog" | ${bconsole} | grep -i "pgsql\|postgresql" | wc -l`
 if [ $check_database -eq 1 ]; then
    sql_query=$query_pgsql
 else
