@@ -4,6 +4,10 @@
 
 [Conf](/conf) - Example of bacula conf files
 
+[Convert MySQL to PostgreSQL ](/convert_mysql_to_postgresql) - Script to convert Bacula Catalog MySQL to PostgreSQL
+
+[Tips](/dicas) - Some tips to use in Bacula config
+
 [Firebird](/firebird) - Script to backup firebird databases
 
 [Hyper-V](/hyper-v) - Script to backup Hyper-V VM's using Windows Backup
