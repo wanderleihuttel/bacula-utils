@@ -4,6 +4,10 @@
 
 [Conf](/conf) - Exemplo de configurações
 
+[Converter MySQL para PostgreSQL](/convert_mysql_to_postgresql) - Scripts para conversão de Banco MySQL para PostgreSQL
+
+[Dicas](/dicas) - Algumas dicas de configuração do Bacula
+
 [Firebird](/firebird) - Script para efetuar backup de banco de dados Firebird
 
 [Hyper-V](/hyper-v) - Script para efetuar backup a quente de VM Hyper-V usando Windows Backup
