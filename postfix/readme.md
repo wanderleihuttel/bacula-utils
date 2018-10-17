@@ -6,36 +6,41 @@ Mais detalhes no link: https://support.google.com/accounts/answer/6010255?hl=pt-
 ### Atualizar e instalar dependências
 
 ```
+# Debian
 apt-get update
 apt-get install postfix mailutils libsasl2-modules
 
 Durante a instalação vai abrir um prompt perguntando qual o tipo de configuração de email:
 - Selecione Internet
 - Digite 'localhost'
+
+# CentOS
+yum install postfix cyrus-sasl-plain
+yum remove ssmtp
 ```
 ### Copiar os arquivos (main.cf, generic e sasl_passwd) para /etc/postfix
 
 ### Modificar o arquivo /etc/postfix/main.cf e alterar as linhas abaixo
 ```
-myhostname = debian
-relayhost = [smtp.dominio.com]:587
+myhostname = hostname_of_machine
+relayhost = [smtp.domain.com]:587
 ```
 
 ### Modificar o arquivo /etc/postfix/sasl_passwd com as credenciais
 ```
 Exemplo:
-[smtp.domain.com]:587 user@domain.com:password
+[smtp.domain.com]:587 sender@domain.com:password
 ```
 
 ### Modificar o arquivo /etc/postfix/generic com o email genérico para reescrever
 ```
 Example:
-root@debian.local       user@domain.com
+root@hostname       recipient@domain.com
 ```
 
 ### Verificar o arquivo /etc/mailname e caso esteja com problemas alterar para localhost
 ```
-Example:
+Example: (only for Debian)
 echo "localhost" > /etc/mailname
 ```
 
@@ -47,5 +52,5 @@ postmap /etc/postfix/generic
 
 ### Testar o envio de email
 ```
-echo "OK" | mail -s "Testing mail postfix external SMTP" user@domain.com
+echo "OK" | mail -s "Testing mail postfix external SMTP" recipient@domain.com
 ```
