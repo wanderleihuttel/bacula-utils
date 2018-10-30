@@ -18,7 +18,7 @@ Durante a instalação vai abrir um prompt perguntando qual o tipo de configura�
 yum install postfix cyrus-sasl-plain
 yum remove ssmtp
 ```
-### Copiar os arquivos (main.cf, generic e sasl_passwd) para /etc/postfix
+### Copiar os arquivos (main.cf, generic, sasl_passwd e sender_relay) para /etc/postfix
 
 ### Modificar o arquivo /etc/postfix/main.cf e alterar as linhas abaixo
 ```
