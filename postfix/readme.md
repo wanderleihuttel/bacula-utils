@@ -67,3 +67,13 @@ systemctl restart postfix
 ```
 echo "OK" | mail -s "Testing mail postfix external SMTP" someemail@domain.com
 ```
+
+### Resolvendo Problemas
+Em caso de erro é preciso checar os logs para maiores informações:
+```
+No CentOS:
+tail -f /var/log/maillog
+
+No Debian
+tail -f /var/log/mail.log
+```
