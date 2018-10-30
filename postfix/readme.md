@@ -34,8 +34,9 @@ Exemplo:
 
 ### Modificar o arquivo /etc/postfix/generic com o email genérico para reescrever
 ```
-Example:
-root@hostname       recipient@domain.com
+Exemplo: (pode conter mais de uma linha)
+root@hostname             sender@domain.com
+root@hostname.local       sender@domain.com
 ```
 
 ### Modificar o arquivo /etc/postfix/sender_relay com o email do remetente
@@ -57,7 +58,12 @@ postmap /etc/postfix/generic
 postmap /etc/postfix/sender_relay
 ```
 
+### Reiniciar o Postfix
+```
+systemctl restart postfix
+```
+
 ### Testar o envio de email
 ```
-echo "OK" | mail -s "Testing mail postfix external SMTP" recipient@domain.com
+echo "OK" | mail -s "Testing mail postfix external SMTP" someemail@domain.com
 ```
