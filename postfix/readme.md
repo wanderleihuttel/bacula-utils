@@ -38,6 +38,12 @@ Example:
 root@hostname       recipient@domain.com
 ```
 
+### Modificar o arquivo /etc/postfix/sender_relay com o email do remetente
+```
+Example:
+sender@domain.com.br   [smtp.domain.com.br]:587
+```
+
 ### Verificar o arquivo /etc/mailname e caso esteja com problemas alterar para localhost
 ```
 Example: (only for Debian)
@@ -48,6 +54,7 @@ echo "localhost" > /etc/mailname
 ```
 postmap /etc/postfix/sasl_passwd
 postmap /etc/postfix/generic
+postmap /etc/postfix/sender_relay
 ```
 
 ### Testar o envio de email
