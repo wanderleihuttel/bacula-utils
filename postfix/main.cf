@@ -36,3 +36,8 @@ smtp_generic_maps = hash:/etc/postfix/generic
 # Debug if necessary
 # debug_peer_list=smtp.domain.com
 # debug_peer_level=3
+
+smtp_sender_dependent_authentication = yes
+sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
+compatibility_level = 2
+smtputf8_enable = no
