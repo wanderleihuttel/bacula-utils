@@ -5,12 +5,14 @@ append_dot_mydomain = no
 readme_directory = no
 
 # Hostname (modify the line below)
-myhostname = hostanema_machine
+myhostname = hostname_of_machine
 
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
+
 # Comment the line below in CentOS
-# myorigin = /etc/mailname
+myorigin = /etc/mailname
+
 mydestination = $myhostname localhost.$mydomain localhost $mydomain
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_command = procmail -a "$EXTENSION"
@@ -19,7 +21,7 @@ recipient_delimiter = +
 inet_interfaces = all
 
 # SMTP relayhost
-relayhost = [smtp.domain.com]:587 # CHANGE ME
+relayhost = [smtp.domain.com]:587
 
 # TLS Settings
 smtp_tls_loglevel = 1
@@ -33,9 +35,9 @@ smtp_sasl_tls_security_options = noanonymous
 # Alias rewrite map mail
 smtp_generic_maps = hash:/etc/postfix/generic
 
-# Debug if necessary
-# debug_peer_list=smtp.domain.com
-# debug_peer_level=3
+# Uncomment the lines below for debug
+#debug_peer_list=smtp.domain.com
+#debug_peer_level=3
 
 smtp_sender_dependent_authentication = yes
 sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
