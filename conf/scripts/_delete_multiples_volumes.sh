@@ -1,32 +1,48 @@
 #!/bin/bash
+#######################################
+bconsole=$(which bconsole)
+
 clear
-echo "list pools" | bconsole | grep "[+|\|]" 
-read -p "Digite o nome da Pool que gostaria de excluir os volumes: " pool
-echo "Pool selecionada: $pool"
+echo "--------------------------------------------"
+echo " Script to delete volumes in mass"
+echo " Author:  Wanderlei Hüttel"
+echo " Email:   wanderlei.huttel@gmail.com"
+echo " Version: 1.1 - 12/11/2018"
+echo "--------------------------------------------"
 echo ""
-read -p "Digite o status dos volumes que gostaria de verificar (Error, Used, Full, Append, Recycled): " volstatus
 
-arraysize=$(echo "list media pool=$pool" | bconsole  | grep "|" | grep -v "MediaId" | grep "$volstatus" | cut -d "|" -f3 | sed 's/ //g' | wc -l)
-#volname=$(echo "list media pool=$pool" | bconsole  | grep "|" | grep -v "MediaId" | grep "$volstatus" | cut -d "|" -f3 | sed 's/ //g')
+echo "list pools" | ${bconsole} | grep "[+|\|]"
+read -p "Enter the name of the Pool that you would like to delete the volumes: " pool
+echo "Selected Pool: ${pool}"
 echo ""
-for volname in $(echo "list media pool=$pool" | bconsole  | grep "|" | grep -v "MediaId" | grep "$volstatus" | cut -d "|" -f3 | sed 's/ //g'); do 
-   #echo "delete volume=$volname pool=$pool yes" ;
-   echo "$volname" ;
+read -p "Enter the status of the volumes you would like to check (Error, Used, Full, Append, Recycled): " volstatus
+
+arraycount=$(echo "list media pool=${pool}" | ${bconsole}  | grep "|" | grep -v "MediaId" | grep "${volstatus}" | cut -d "|" -f3 | sed 's/ //g' | wc -l)
+echo ""
+for volname in $(echo "list media pool=${pool}" | ${bconsole}  | grep "|" | grep -v "MediaId" | grep "${volstatus}" | cut -d "|" -f3 | sed 's/ //g'); do
+    echo " ${volname}" ;
 done
-echo -e "Foram encontrados $arraysize volumes com o Status $volstatus\n"
+echo ""
 
-read -p "Tem certeza que deseja excluir todos os $arraysize volumes? Esta operacao e irreversivel! (S-Sim/N-Nao)" confirm
-
-if [ "$confirm" == "s" ] || [ "$confirm" == "S" ]; then
-   for volname in $(echo "list media pool=$pool" | bconsole  | grep "|" | grep -v "MediaId" | grep "$volstatus" | cut -d "|" -f3 | sed 's/ //g'); do 
-      echo "delete volume=$volname pool=$pool yes" ;
-      # Descomentar a linha abaixo para efetuar a exclusão dos volumes no catálogo
-      #echo "delete volume=$volname pool=$pool yes" | bconsole ;
-
-      # Se precisar excluir fisicamente pode descomentar o comando abaixo
-      # rm -f /backup/$volname
-   done
-   echo "Excluindo volumes..."
+if [ ${arraycount} == "0" ]; then
+    echo -e "No volumes found with status '${volstatus}'\n"
+    echo -e "Operation aborted!\n"
+    exit
 else
-   echo "Operacao abortada!"
+    echo -e "${arraycount} volumes was found with status '${volstatus}'\n"
+fi
+
+read -p "Are you sure you want to delete all ${arraycount} volumes? This operation is irreversible! (Y-Yes / N-No) " confirm
+if [ "${confirm}" == "y" ] || [ "${confirm}" == "Y" ]; then
+    for volname in $(echo "list media pool=${pool}" | ${bconsole}  | grep "|" | grep -v "MediaId" | grep "${volstatus}" | cut -d "|" -f3 | sed 's/ //g'); do
+        echo "delete volume=${volname} pool=${pool} yes" ;
+        # Uncomment the line below to exclude the volumes in the catalog
+        #echo "delete volume=${volname} pool=${pool} yes" | ${bconsole} ;
+
+        # Uncomment the line below and change the path of storage to remove volume from the disk also
+        # rm -f /path/to/storage/${volname}
+    done
+    echo -e "Operation finished with success!\n"
+else
+    echo -e "Operation aborted!\n"
 fi
