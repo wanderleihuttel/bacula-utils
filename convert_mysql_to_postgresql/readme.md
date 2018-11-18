@@ -1,4 +1,6 @@
 ### Script do convert MySQL to PostgreSQL
+Based on Bacula Manual
+https://www.bacula.org/9.2.x-manuals/en/main/Installing_Configuring_Post.html#SECTION004450000000000000000
 
 This script is used to convert a Bacula Database from MySQL to PostgreSQL.
 It was tested using MySQL 5.6 and 5.7 to a PostgreSQL 9.4 and 9.6 and Bacula 9.0.5
