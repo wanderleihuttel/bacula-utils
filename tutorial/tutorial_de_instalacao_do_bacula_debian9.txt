@@ -91,7 +91,7 @@ apt-get install mysql-community-server libmysqlclient-dev
 * Cuidado com senhas com caractes especiais, pois podem apresentar problemas na 
 criação dos scripts. Se for uma instalação fresca, prefira deixar a senha em branco.
 
-*Lembrando que o MariaDB não é homolagago pelo Bacula, porém funciona.
+*Lembrando que o MariaDB não é homologado pelo Bacula, porém funciona.
 apt-get install mariadb-server libmariadbd-dev libmariadbclient-dev \
 libmariadbclient-dev-compat
 
