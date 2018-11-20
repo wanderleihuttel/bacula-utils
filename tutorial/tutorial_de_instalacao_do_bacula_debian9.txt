@@ -1,13 +1,13 @@
 #####################################################################################
-# Passos para Instalação do Bacula via Compilação em Debian 9.X                       #
+# Passos para Instalação do Bacula via Compilação em Debian 9.X                     #
 # MySQL e PostgreSQL                                                                #
 # Autor: Wanderlei Hüttel                                                           #
-# Data atualização:  26/06/2018                                                     #
+# Data atualização:  19/11/2018                                                     #
 #####################################################################################
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
-* Este tutorial foi testado em Debian 9.4 em 26/06/2018
+* Este tutorial foi testado em Debian 9.6 em 19/11/2018
 
 +-----------------------------------------------------------------------------------+
 | >>> Atualizar a lista dos pacotes <<<                                             |
@@ -91,7 +91,7 @@ apt-get install mysql-community-server libmysqlclient-dev
 * Cuidado com senhas com caractes especiais, pois podem apresentar problemas na 
 criação dos scripts. Se for uma instalação fresca, prefira deixar a senha em branco.
 
-*Lembrando que o MariaDB não é homolagago pelo Bacula, porém funciona.
+*Lembrando que o MariaDB não é homologado pelo Bacula, porém funciona.
 apt-get install mariadb-server libmariadbd-dev libmariadbclient-dev \
 libmariadbclient-dev-compat
 
@@ -108,12 +108,12 @@ postgresql-server-dev-9.6
 +-----------------------------------------------------------------------------------+
 cd /usr/src
 *Utilizando wget 
-wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.0.8/bacula-9.0.8.tar.gz
-tar xvzf bacula-9.0.8.tar.gz
-cd bacula-9.0.8
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.2.2/bacula-9.2.2.tar.gz
+tar xvzf bacula-9.2.2.tar.gz
+cd bacula-9.2.2
 
 *Utilizando git (sempre pega a versão mais recente, porém as vezes pode conter alguns bugs)
-git clone -b Branch-9.0 http://git.bacula.org/bacula.git bacula
+git clone -b Branch-9.2 http://git.bacula.org/bacula.git bacula
 
 cd /usr/src/bacula/bacula
 
@@ -122,7 +122,8 @@ cd /usr/src/bacula/bacula
 *                                                                                                      *
 * Nessa parte abaixo é preciso definir o banco de dados que será utilizado MySQL/MariaDB ou PostgreSQL *
 * Utilize os comandos de acordo com o banco escolhido.                                                 *
-* Na versão 9 do Debian ainda não é compatível a nova versão do OpenSSL-1.1, então não habilitamos     *
+* Caso tenha problemas durante a compilação com o OpenSSL no Debian versão 9.x, compile sem o 
+* OpenSSL-1.1, então não habilitamos     *
 * --without-openssl                                                                                    *
 *                                                                                                      *
 ********************************************************************************************************
@@ -145,6 +146,8 @@ cd /usr/src/bacula/bacula
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
+ --with-basename=bacula \
+ --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \ 
  --with-systemd \
  --disable-conio \
  --disable-nls \
@@ -159,7 +162,7 @@ cd /usr/src/bacula/bacula
  --with-db-user=bacula \
  --with-db-password=bacula \
  --with-db-port=5432 \
- --without-openssl \
+ --with-openssl \
  --with-readline=/usr/include/readline \
  --sysconfdir=/etc/bacula \
  --bindir=/usr/bin \
@@ -170,6 +173,8 @@ cd /usr/src/bacula/bacula
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
+ --with-basename=bacula \
+ --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \ 
  --with-systemd \
  --disable-conio \
  --disable-nls \
@@ -277,6 +282,6 @@ e verá uma tela conforme abaixo
 
 root@bacula:/# bconsole
 Connecting to Director 192.168.1.1:9101
-1000 OK: 103 debian-dir Version: 9.0.8 (28 May 2018)
+1000 OK: 103 bacula-dir Version: 9.2.2 (06 November 2018)
 Enter a period to cancel a command.
 *
