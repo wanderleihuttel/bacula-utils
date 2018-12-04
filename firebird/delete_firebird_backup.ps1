@@ -10,8 +10,10 @@ $file1 = $backupFolder + "\" + $fbBackup;
 $file2 = $backupFolder + "\" + $fbLog;
 if( Test-Path $file1){
   Remove-Item $file1
+  Write-Host "Arquivo $file1 excluido com sucesso!"
 }
 if( Test-Path $file2){
   Remove-Item $file2
+  Write-Host "Arquivo $file2 excluido com sucesso!"
 }	
 Exit 0
