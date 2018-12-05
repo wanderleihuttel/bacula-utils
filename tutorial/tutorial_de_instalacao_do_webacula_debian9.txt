@@ -4,15 +4,15 @@
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
-* Este tutorial foi testado em Debian 9.1 em 28/09/2017
-O webacula com o PHP-7.0 tem alguns warnings que precisam ser corrigidos, a principio
+* Este tutorial foi testado em Debian 9.5 em 05/12/2018
+O webacula com o PHP-7.X (PHP <=7.3) tem alguns warnings que precisam ser corrigidos, a principio
 nada grave.
 * Nesta versão 7.5.3, foi removido o arquivo db.conf do diretório install, que era 
 utilizado para configurar as senhas do banco de dados para criação das tabelas. Agora
 a criação das tabelas do webacula é igual a criação das tabelas do próprio bacula, onde
 executa-se o script passando o usuário e senha após o nome do arquivo.
 * o usuário padrão é 'root' e a senha é 'bacula' e pode ser alterada após o primeiro login
-* 
+* Na versão 7.5.4 foi ajustado alguns arquivos do ZendFramework1 para funcionar com o PHP <= 7.3
 
 Considerando que você já possuí o Bacula instalado
 
@@ -44,7 +44,7 @@ apt-get install php-pgsql
 | >>> Configurar o PHP <<<                                                          |
 +-----------------------------------------------------------------------------------+
 Editar o arquivo /etc/php/7.0/apache2/php.ini  and alterar a opção 'date.timezone' e 'max_execution_time'
-vim /etc/php5/apache2/php.ini
+vim /etc/php/7.0/apache2/php.ini
 date.timezone = America/Sao_Paulo
 max_execution_time = 3600
 
@@ -53,11 +53,11 @@ max_execution_time = 3600
 | >>> Efetuar o download da última versão do Webacula <<<                           |
 +-----------------------------------------------------------------------------------+
 Verificar qual é a última versão do Webacula em: https://github.com/wanderleihuttel/webacula/releases
-* A última versão na instalação do tutorial é a 7.5.3
+* A última versão na instalação do tutorial é a 7.5.4
 cd /usr/src/
-wget --no-check-certificate -c https://github.com/wanderleihuttel/webacula/archive/7.5.3.tar.gz
-tar xvzf 7.5.3.tar.gz
-mv webacula-7.5.3 webacula
+wget --no-check-certificate -c https://github.com/wanderleihuttel/webacula/archive/7.5.4.tar.gz
+tar xvzf 7.5.4.tar.gz
+mv webacula-7.5.4 webacula
 
 
 +-----------------------------------------------------------------------------------+
