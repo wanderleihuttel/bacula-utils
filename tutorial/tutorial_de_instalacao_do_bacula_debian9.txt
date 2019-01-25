@@ -147,7 +147,7 @@ cd /usr/src/bacula/bacula
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
  --with-basename=bacula \
- --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \ 
+ --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \
  --with-systemd \
  --disable-conio \
  --disable-nls \
@@ -174,7 +174,7 @@ cd /usr/src/bacula/bacula
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
  --with-basename=bacula \
- --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \ 
+ --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \
  --with-systemd \
  --disable-conio \
  --disable-nls \
