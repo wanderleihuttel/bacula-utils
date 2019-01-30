@@ -70,7 +70,7 @@ cd /usr/src/webacula/install/MySql
 ./20_acl_make_tables.sh
 /etc/bacula/scripts/grant_mysql_privileges
 
-* Caso não tenha definido uma senha
+* Caso tenha definido uma senha
 ./10_make_tables.sh -p
 ./20_acl_make_tables.sh -p
 /etc/bacula/scripts/grant_mysql_privileges -p
