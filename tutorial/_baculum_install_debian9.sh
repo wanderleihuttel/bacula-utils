@@ -3,7 +3,7 @@
 # Automatic Baculum Install on Debian 9         #
 # Author:  Wanderlei Hüttel                     #
 # Email:   wanderlei.huttel@gmail.com           #
-# Version: 1.3 - 15/08/2018                     #
+# Version: 1.4 - 13/02/2019                     #
 #################################################
 
 # Based on script https://github.com/carlosedulucas/baculum/blob/master/instalação do baculum.txt
@@ -14,11 +14,11 @@ echo ">>> Disabling any Baculum site ..."
 a2dissite baculum*
 
 echo ">>> Download the last version of Baculum ..."
-wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.2.2/bacula-gui-9.2.2.tar.gz
-tar -xzvf /usr/src/bacula-gui-9.2.2.tar.gz  -C /usr/src/
+wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.4.2/bacula-gui-9.4.2.tar.gz
+tar -xzvf /usr/src/bacula-gui-9.4.2.tar.gz  -C /usr/src/
 
 echo ">>> Copying Baculum files to /var/www/baculum ..."
-cp -R /usr/src/bacula-gui-9.2.2/baculum/ /var/www
+cp -R /usr/src/bacula-gui-9.4.2/baculum/ /var/www
 
 echo ">>> Create Baculum users (default user: admin | default password: admin ..."
 htpasswd -cb /var/www/baculum/protected/Web/baculum.users admin admin
