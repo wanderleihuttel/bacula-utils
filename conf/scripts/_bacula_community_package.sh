@@ -45,7 +45,7 @@ function create_bacula_repository()
     clear
     echo " --------------------------------------------------"
     echo " Inform the Bacula version"
-    url="http://www.bacula.org/packages/${bacula_key}/debs/"
+    url="https://www.bacula.org/packages/${bacula_key}/debs/"
     IFS=$'\n'
     versions=$(curl --silent --fail -r 0-0 "${url}" | grep -o '<a.*>.*/</a>' | sed 's/\(<a.*">\|\/<\/a>\)//g')
     for i in ${versions}; do
@@ -57,7 +57,7 @@ function create_bacula_repository()
         echo "# Bacula Community
 deb ${url} stretch main" > /etc/apt/sources.list.d/bacula-community.list
     elif [ "$OS" == "centos" ]; then
-        url="http://www.bacula.org/packages/${bacula_key}/rpms/${bacula_version}/el7/x86_64/"
+        url="https://www.bacula.org/packages/${bacula_key}/rpms/${bacula_version}/el7/x86_64/"
         echo "[Bacula-Community]
 name=CentOS - Bacula - Community
 baseurl=${url}
