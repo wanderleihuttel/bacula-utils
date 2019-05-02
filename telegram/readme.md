@@ -60,8 +60,8 @@ Catalog {
 
 ```
 ### Debian ###
-apt-get install curl bc
+apt-get install curl bc coreutils
 
 ### CentOS ###
-yum -y install curl bc
+yum -y install curl bc coreutils
 ```
