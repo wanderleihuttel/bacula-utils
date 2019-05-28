@@ -3,7 +3,7 @@
 #
 # Author:  Wanderlei Huttel
 # Email:   wanderlei@bacula.com.br
-version="1.0.4 - 25 Oct 2018"
+version="1.0.5 - 27 May 2019"
 
 
 #===============================================================================
@@ -14,7 +14,7 @@ function read_bacula_key()
     echo " --------------------------------------------------"
     echo " Inform your Bacula Key"
     echo " This key is obtained with a registration in Bacula.org."
-    echo " http://blog.bacula.org/bacula-binary-package-download/"
+    echo " https://www.bacula.org/bacula-binary-package-download/"
     read -p " Please, fill with your Bacula Key: " bacula_key
 }
 
@@ -237,7 +237,7 @@ else
 fi
 
 if [ "$OS" == "debian" ]; then
-    apt-get install -y zip wget bzip2 curl
+    apt-get install -y zip wget apt-transport-https bzip2 curl
 elif [ "$OS" == "centos" ]; then
     yum install -y zip wget apt-transport-https bzip2 curl
 fi
