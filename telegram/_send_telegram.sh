@@ -19,9 +19,11 @@ debug=0 # 0-Disable debug messages / 1-Enable debug messages
 
 # Telegram config
 # Use @BotFather to create a bot an get the API token
-# Send a message to bot
+# Send a message to the Bot @userinfobot to get your id
+# Or send a message to a bot created and
 # Open in browser the url https://api.telegram.org/bot${api_token}/getUpdates 
 # and get the value of id of user where the message line is.
+
 api_token="change_with_your_api_key"
 id="change_with_your_user_id"
 log="/var/log/bacula/telegram.log"
