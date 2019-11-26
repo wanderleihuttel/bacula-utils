@@ -44,7 +44,8 @@ Job {
   Client = bacula-fd
   FileSet= "pfsense-fs"
   Level = Full
-  ClientRunBeforeJob  = "/etc/bacula/scripts/_backup_pfsense.sh 192.168.1.1"
+  RunBeforeJob  = "/etc/bacula/scripts/_backup_pfsense.sh 192.168.1.1"
+  RunAfterJob = "rm -rf /tmp/pfsense"
 }
 ```
 
