@@ -26,6 +26,8 @@ Você vai receber uma saída no formato JSON, pegar o valor do 'id' da linha que
 "username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
 "username":"someuser","type":"private"},"date":1472165730,"text":"HELLO_BOT"}}]}
 
+Ou então mande uma mensagem para o bot @userinfobot que ele vai retornar o valor de sua id
+
 Agora informe os valores do token da API e o id do usuário no script:
 api_token="change_with_your_api_key"
 id="change_with_your_user_id"
