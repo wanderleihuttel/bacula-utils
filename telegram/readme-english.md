@@ -23,6 +23,9 @@ Open in browser the URL. You will receive a JSON output, get the 'id' value.
 "message":{"message_id":3,"from":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
 "username":"someusername"},"chat":{"id":123456789,"first_name":"Some Name","last_name":"Some Last Name",
 "username":"someuser","type":"private"},"date":1472165730,"text":"hello"}}]}
+
+Or send a message to the @userinfobot bot that it will return the value of your id
+
 ```
 
 ### Add a RunsScript in JobDefs Resource in the file bacula-dir.conf
