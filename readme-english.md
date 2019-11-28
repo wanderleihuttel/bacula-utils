@@ -16,6 +16,8 @@
 
 [MSSQL](/mssql) - Script to backup SQL Server 2008/2012 databases
 
+[Pfsense](/pfsense) - Script to backup PfSense Firewall
+
 [Postfix](/postfix) - Configure Postfix to send mail using an external SMTP server
 
 [Telegram scripts](/telegram) - Scripts to send messages of jobs using telegram
