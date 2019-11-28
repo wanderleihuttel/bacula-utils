@@ -108,12 +108,12 @@ postgresql-server-dev-9.6
 +-----------------------------------------------------------------------------------+
 cd /usr/src
 *Utilizando wget 
-wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.2.2/bacula-9.2.2.tar.gz
-tar xvzf bacula-9.2.2.tar.gz
-cd bacula-9.2.2
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.4.4/bacula-9.4.4.tar.gz
+tar xvzf bacula-9.4.4.tar.gz
+cd bacula-9.4.4
 
 *Utilizando git (sempre pega a versão mais recente, porém as vezes pode conter alguns bugs)
-git clone -b Branch-9.2 http://git.bacula.org/bacula.git bacula
+git clone -b Branch-9.4 http://git.bacula.org/bacula.git bacula
 
 cd /usr/src/bacula/bacula
 
@@ -135,7 +135,7 @@ cd /usr/src/bacula/bacula
  --with-db-user=bacula \
  --with-db-password=bacula \
  --with-db-port=3306 \
- --without-openssl \
+ --with-openssl \
  --with-readline=/usr/include/readline \
  --sysconfdir=/etc/bacula \
  --bindir=/usr/bin \
@@ -282,6 +282,6 @@ e verá uma tela conforme abaixo
 
 root@bacula:/# bconsole
 Connecting to Director 192.168.1.1:9101
-1000 OK: 103 bacula-dir Version: 9.2.2 (06 November 2018)
+1000 OK: 103 bacula-dir Version: 9.4.4 (28 May 2019)
 Enter a period to cancel a command.
 *
