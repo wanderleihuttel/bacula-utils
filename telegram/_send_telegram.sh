@@ -4,7 +4,7 @@
 # Send message jobs to telegram bot
 # Author:  Wanderlei Hüttel
 # Email:   wanderlei.huttel@gmail.com
-# Version: 1.3 - 02/05/2019
+# Version: 1.4 - 19/02/2020
 #==============================================
 
 #==============================================
@@ -94,7 +94,7 @@ var="$(cat <<EOF
 gui on
 sqlquery
 ${sql_query}
-
+#DONT_DELETE_THIS_LINE#
 exit
 EOF
 )"
