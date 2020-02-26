@@ -14,11 +14,11 @@ echo ">>> Disabling any Baculum site ..."
 a2dissite baculum*
 
 echo ">>> Download the last version of Baculum ..."
-wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.4.2/bacula-gui-9.4.2.tar.gz
-tar -xzvf /usr/src/bacula-gui-9.4.2.tar.gz  -C /usr/src/
+wget -P /usr/src https://sourceforge.net/projects/bacula/files/bacula/9.4.4/bacula-gui-9.4.4.tar.gz
+tar -xzvf /usr/src/bacula-gui-9.4.4.tar.gz  -C /usr/src/
 
 echo ">>> Copying Baculum files to /var/www/baculum ..."
-cp -R /usr/src/bacula-gui-9.4.2/baculum/ /var/www
+cp -R /usr/src/bacula-gui-9.4.4/baculum/ /var/www
 
 echo ">>> Create Baculum users (default user: admin | default password: admin ..."
 htpasswd -cb /var/www/baculum/protected/Web/baculum.users admin admin
@@ -42,7 +42,16 @@ apache2 ALL=NOPASSWD: /etc/bacula/\n\
 apache2 ALL=NOPASSWD: /usr/sbin/bdirjson\n\
 apache2 ALL=NOPASSWD: /usr/sbin/bbconsjson\n\
 apache2 ALL=NOPASSWD: /usr/sbin/bfdjson\n\
-apache2 ALL=NOPASSWD: /usr/sbin/bsdjson" > /etc/sudoers.d/baculum
+apache2 ALL=NOPASSWD: /usr/sbin/bsdjson\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl start bacula-dir\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl stop bacula-dir\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl restart bacula-dir\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl start bacula-sd\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl stop bacula-sd\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl restart bacula-sd\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl start bacula-fd\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl stop bacula-fd\n\
+apache2 ALL=(root) NOPASSWD: /bin/systemctl restart bacula-fd" > /etc/sudoers.d/baculum
 
 echo ">>> Enable apache rewrite mode ..."
 a2enmod rewrite
