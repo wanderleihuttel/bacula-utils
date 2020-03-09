@@ -7,7 +7,7 @@ echo "--------------------------------------------"
 echo " Script to delete volumes in mass"
 echo " Author:  Wanderlei Hüttel"
 echo " Email:   wanderlei.huttel@gmail.com"
-echo " Version: 1.1 - 12/11/2018"
+echo " Version: 1.2 - 09/03/2020"
 echo "--------------------------------------------"
 echo ""
 
@@ -25,7 +25,7 @@ done
 echo ""
 
 if [ ${arraycount} == "0" ]; then
-    echo -e "No volumes found with status '${volstatus}'\n"
+    echo -e "No volumes found in the pool '${pool}' with status '${volstatus}'\n"
     echo -e "Operation aborted!\n"
     exit
 else
