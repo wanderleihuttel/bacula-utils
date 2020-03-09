@@ -25,7 +25,7 @@ done
 echo ""
 
 if [ ${arraycount} == "0" ]; then
-    echo -e "No volumes found in the pool '${pool}' with status '${volstatus}'\n"
+    echo -e "No volumes were found in the pool '${pool}' with status '${volstatus}'\n"
     echo -e "Operation aborted!\n"
     exit
 else
