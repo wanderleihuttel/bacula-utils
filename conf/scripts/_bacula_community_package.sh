@@ -3,7 +3,7 @@
 #
 # Author:  Wanderlei Huttel
 # Email:   wanderlei@bacula.com.br
-version="1.0.5 - 27 May 2019"
+version="1.0.7 - 19 May 2020"
 
 
 #===============================================================================
@@ -24,7 +24,7 @@ function read_bacula_key()
 function download_bacula_key()
 {
     wget -c https://www.bacula.org/downloads/Bacula-4096-Distribution-Verification-key.asc -O /tmp/Bacula-4096-Distribution-Verification-key.asc
-    if [ "$OS" == "debian" ]; then
+    if [ "$OS" == "debian" -o "$OS" == "ubuntu" ]; then
         apt-key add /tmp/Bacula-4096-Distribution-Verification-key.asc
     elif [ "$OS" == "centos" ]; then
         rpm --import /tmp/Bacula-4096-Distribution-Verification-key.asc
@@ -52,12 +52,14 @@ function create_bacula_repository()
         echo "   - $i";
     done
     read -p " Type your the Bacula Version: " bacula_version
-    if [ "$OS" == "debian" ]; then
-        url="http://www.bacula.org/packages/${bacula_key}/debs/${bacula_version}/stretch/amd64"
+    
+    if [ "$OS" == "debian" -o "$OS" == "ubuntu"]; then
+        url="http://www.bacula.org/packages/${bacula_key}/debs/${bacula_version}/${codename}/amd64"
         echo "# Bacula Community
-deb ${url} stretch main" > /etc/apt/sources.list.d/bacula-community.list
+deb ${url} ${codename} main" > /etc/apt/sources.list.d/bacula-community.list
+    
     elif [ "$OS" == "centos" ]; then
-        url="https://www.bacula.org/packages/${bacula_key}/rpms/${bacula_version}/el7/x86_64/"
+        url="https://www.bacula.org/packages/${bacula_key}/rpms/${bacula_version}/el${codename}/x86_64/"
         echo "[Bacula-Community]
 name=CentOS - Bacula - Community
 baseurl=${url}
@@ -86,19 +88,19 @@ gpgcheck=0" > /etc/yum.repos.d/bacula-community.repo
 function install_with_mysql()
 {
     wget -c https://repo.mysql.com/RPM-GPG-KEY-mysql -O /tmp/RPM-GPG-KEY-mysql --no-check-certificate
-    if [ "$OS" == "debian" ]; then
+    if [ "$OS" == "debian" -o "$OS" == "ubuntu" ]; then
         apt-key add /tmp/RPM-GPG-KEY-mysql
-        echo "deb http://repo.mysql.com/apt/debian/ stretch mysql-apt-config
-deb http://repo.mysql.com/apt/debian/ stretch mysql-5.7
-deb http://repo.mysql.com/apt/debian/ stretch mysql-tools
-deb http://repo.mysql.com/apt/debian/ stretch mysql-tools-preview
-deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7" > /etc/apt/sources.list.d/mysql.list
+        echo "deb http://repo.mysql.com/apt/debian/ ${codename} mysql-apt-config
+deb http://repo.mysql.com/apt/debian/ ${codename} mysql-5.7
+deb http://repo.mysql.com/apt/debian/ ${codename} mysql-tools
+deb http://repo.mysql.com/apt/debian/ ${codename} mysql-tools-preview
+deb-src http://repo.mysql.com/apt/debian/ ${codename} mysql-5.7" > /etc/apt/sources.list.d/mysql.list
         apt-get update
         apt-get install -y mysql-community-server
         apt-get install -y bacula-mysql
         systemctl enable mysql
         systemctl start mysql
-
+        
     elif [ "$OS" == "centos" ]; then
         rpm --import /tmp/RPM-GPG-KEY-mysql
         wget -c http://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm -O /tmp/mysql57-community-release-el7-9.noarch.rpm
@@ -122,7 +124,7 @@ deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7" > /etc/apt/sources.
     systemctl start bacula-sd.service
     systemctl start bacula-dir.service
 
-    for i in `ls /opt/bacula/bin`; do 
+    for i in $(ls /opt/bacula/bin); do 
         ln -s /opt/bacula/bin/$i /usr/sbin/$i; 
     done
     sed '/[Aa]ddress/s/=\s.*/= localhost/g' -i  /opt/bacula/etc/bconsole.conf
@@ -134,7 +136,7 @@ deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7" > /etc/apt/sources.
 # Install PostgreSQL
 function install_with_postgresql()
 {
-    if [ "$OS" == "debian" ]; then
+    if [ "$OS" == "debian" -o "$OS" == "ubuntu" ]; then
         apt-get update
         apt-get install -y postgresql postgresql-client
         apt-get install -y bacula-postgresql
@@ -159,7 +161,7 @@ function install_with_postgresql()
     systemctl start bacula-sd.service
     systemctl start bacula-dir.service
 
-    for i in `ls /opt/bacula/bin`; do
+    for i in $(ls /opt/bacula/bin); do
         ln -s /opt/bacula/bin/$i /usr/sbin/$i;
     done
     sed '/[Aa]ddress/s/=\s.*/= localhost/g' -i  /opt/bacula/etc/bconsole.conf
@@ -209,6 +211,7 @@ function menu()
 #===============================================================================
 # Detect Debian users running the script with "sh" instead of bash
 OS=""
+codename=""
 bacula_key=""
 export DEBIAN_FRONTEND=noninteractive
 clear
@@ -223,7 +226,8 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 if [[ -e /etc/debian_version ]]; then
-    OS=debian
+    OS=$(cat /etc/os-release  | egrep "^ID=" | sed 's/.*=//g')
+    codename=$(cat /etc/os-release | grep "VERSION_CODENAME" | sed 's/.*=//g')
 elif [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
     setenforce 0
     sudo sed -i "s/enforcing/disabled/g" /etc/selinux/config
@@ -231,12 +235,13 @@ elif [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
     firewall-cmd --permanent --zone=public --add-port=9101-9103/tcp
     systemctl restart firewalld
     OS=centos
+    codename=$(cat /etc/os-release | grep "VERSION_ID" | sed 's/[^0-9]//g')
 else
     echo "Looks like you aren't running this installer on Debian, Ubuntu or CentOS"
     exit
 fi
 
-if [ "$OS" == "debian" ]; then
+if [ "$OS" == "debian" -o "$OS" == "ubuntu" ]; then
     apt-get install -y zip wget apt-transport-https bzip2 curl
 elif [ "$OS" == "centos" ]; then
     yum install -y zip wget apt-transport-https bzip2 curl
