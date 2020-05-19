@@ -53,7 +53,7 @@ function create_bacula_repository()
     done
     read -p " Type your the Bacula Version: " bacula_version
     
-    if [ "$OS" == "debian" -o "$OS" == "ubuntu"]; then
+    if [ "$OS" == "debian" -o "$OS" == "ubuntu" ]; then
         url="http://www.bacula.org/packages/${bacula_key}/debs/${bacula_version}/${codename}/amd64"
         echo "# Bacula Community
 deb ${url} ${codename} main" > /etc/apt/sources.list.d/bacula-community.list
