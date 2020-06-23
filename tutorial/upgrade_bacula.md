@@ -1,5 +1,5 @@
 ## Dicas de como efetuar o upgrade do Bacula
-1. Force a parada do Bacula (pkill -9 bacula) (tenha certeza que nenhum backup esteja sendo executado)
+1. Pare todos os daemons do Bacula (tenha certeza que nenhum backup esteja sendo executado no momento), caso algum daemon estiver pendurado, force a parada com (pkill -9 bacula)
 
 2. Efetuar um backup do banco de dados do Bacula (executar o script padrão de backup do Bacula, geralmente 
 "/etc/bacula/scripts/make_catalog_backup.pl MyCatalog". Copiar em um local seguro o arquivo gerado pelo script.
