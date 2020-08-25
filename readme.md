@@ -1,7 +1,5 @@
 ## Exemplos e utilidades para usar com o bacula
 
-
-
 [Conf](/conf) - Exemplo de configurações
 
 [Converter MySQL para PostgreSQL](/convert_mysql_to_postgresql) - Scripts para conversão de Banco MySQL para PostgreSQL
@@ -23,3 +21,9 @@
 [Telegram scripts](/telegram) - Script para enviar mensagem dos jobs usando o Telegram
 
 [Tutorial](/tutorial) - Tutorial para instalar o Bacula, Webacula e Baculum
+
+<br/><br/>
+<hr>
+Se você gostou deste repositório não esqueça de dar um like (clicando na estrela) :star:
+<br>
+Linkedin - https://www.linkedin.com/in/wanderleihuttel/
