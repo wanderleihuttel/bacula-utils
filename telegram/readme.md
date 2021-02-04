@@ -9,6 +9,7 @@ e seguir os passos abaixo:
 - /newbot - criar um novo bot
 - Digitar um nome para o bot. Exemplo: Bacula Test Bot
 - Digitar um nome de uusário para o bot. Precisar terminar com 'bot' Exemplo: (bacula_test_bot)
+- Caso queira incluir o bot em algym grupo (para mais pessoas receberem as notificações), habilite no @BotFather "Allow Groups"
 
 Anotar o token da API (API TOKEN):
 1234567890:AAFd2sDMplKGyoajsPWARnSOwa9EqHiy17U
@@ -27,6 +28,8 @@ Você vai receber uma saída no formato JSON, pegar o valor do 'id' da linha que
 "username":"someuser","type":"private"},"date":1472165730,"text":"HELLO_BOT"}}]}
 
 Ou então mande uma mensagem para o bot @userinfobot que ele vai retornar o valor de sua id
+
+Quando usar o bot em algum grupo, ao invés de mandar mensagem para o bot, mande para o grupo e pegue o id do grupo.
 
 Agora informe os valores do token da API e o id do usuário no script:
 api_token="change_with_your_api_key"
