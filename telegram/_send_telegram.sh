@@ -4,7 +4,7 @@
 # Send message jobs to telegram bot
 # Author:  Wanderlei Hüttel
 # Email:   wanderlei.huttel@gmail.com
-# Version: 1.4 - 19/02/2020
+# Version: 1.5 - 24/02/2020
 #==============================================
 
 #==============================================
@@ -77,7 +77,7 @@ message_debug "Debug: query_pgsql - '${query_pgsql}'"
 
 #==============================================
 # Check database driver (PostgreSQL or MySQL)
-check_database=$(echo "show catalog" | ${bconsole} | grep -i "pgsql\|postgresql" | wc -l)
+check_database=$(echo "show catalog" | ${bconsole} | grep -i "pgsql\|\|postgres\|postgresql" | wc -l)
 message_debug "Debug: check_database - '${check_database}'"
 if [ $check_database -eq 1 ]; then
    sql_query=$query_pgsql
