@@ -3,12 +3,12 @@
 # MySQL/MariaDB e PostgreSQL                                                        #
 # Autor: Wanderlei Hüttel                                                           #
 # Email: wanderlei.huttel at gmail.com                                              #
-# Data atualização:  10/03/2020                                                     #
+# Data atualização:  09/06/2021                                                     #
 #####################################################################################
 * Leia tudo antes de começar a instalar só depois inicie a instalação. 
 * Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
 esqueceu nenhum passo.
-* Este tutorial foi testado em Debian 10 (buster) em 10/03/2020
+* Este tutorial foi testado em Debian 10 (buster) em 09/06/2020
 
 =====================================================================================
  >>> Atualizar a lista dos pacotes <<<
@@ -21,7 +21,13 @@ apt-get update
 =====================================================================================
 apt-get install vim make gcc build-essential perl unp mc mtx libreadline7 \
 libreadline5-dbg libreadline-gplv2-dev zlib1g-dev lzop liblzo2-dev python-lzo sudo \
-gawk gdb libacl1 libacl1-dev libssl-dev lsscsi apt-transport-https
+gawk gdb libacl1 libacl1-dev libssl-dev lsscsi apt-transport-https 
+
+
+=====================================================================================
+ >>> Pacotes necessários para compilação dos drivers cloud S3 <<<
+=====================================================================================
+apt-get libxml2-dev libcurl4-openssl-dev
 
 
 =====================================================================================
@@ -104,17 +110,29 @@ postgresql-server-dev-11
 
 
 =====================================================================================
+ >>> Baixando e Compilando o Fonte para usar os drivers Cloud S3 <<<
+=====================================================================================
+cd /usr/src
+wget -c https://www.bacula.org/downloads/libs3-20200523.tar.gz
+tar xvzf libs3-20200523.tar.gz
+cd /usr/src/libs3-20200523
+DESTDIR=/usr/local make clean
+DESTDIR=/usr/local make
+DESTDIR=/usr/local make install
+
+
+=====================================================================================
  >>> Baixando e Compilando o Fonte <<<
 =====================================================================================
 cd /usr/src
 *Utilizando wget 
-wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/9.6.3/bacula-9.6.3.tar.gz
-tar xvzf bacula-9.6.3.tar.gz
-cd bacula-9.6.3
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/11.0.5/bacula-11.0.5.tar.gz
+tar xvzf bacula-11.0.5.tar.gz
+cd bacula-11.0.5
 
 *Utilizando git (sempre busca a versão mais recente, porém as vezes pode conter alguns bugs)
 apt-get install git
-git clone -b Branch-9.6 http://git.bacula.org/bacula.git bacula
+git clone -b Branch-11.0 http://git.bacula.org/bacula.git bacula
 cd /usr/src/bacula/bacula
 
 ########################################################################################################
@@ -145,6 +163,7 @@ cd /usr/src/bacula/bacula
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
+ --with-s3=/usr/local \
  --with-basename=bacula \
  --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \
  --with-systemd \
@@ -172,6 +191,7 @@ cd /usr/src/bacula/bacula
  --with-subsys-dir=/etc/bacula/working \
  --with-working-dir=/etc/bacula/working \
  --with-bsrdir=/etc/bacula/bootstrap \
+ --with-s3=/usr/local \
  --with-basename=bacula \
  --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \
  --with-systemd \
@@ -208,7 +228,7 @@ GRANT ALL ON *.* TO 'bacula'@'localhost' IDENTIFIED BY 'bacula' WITH GRANT OPTIO
 GRANT SELECT ON mysql.proc TO 'bacula';
 FLUSH PRIVILEGES;
 QUIT
-/etc/init.d/mysql restart
+systemctl restart mysql
 
 
 =====================================================================================
@@ -217,14 +237,14 @@ QUIT
 chmod 775 /etc/bacula
 cd /etc/bacula/scripts
 * Caso não tenha definido uma senha
-./create_mysql_database
-./make_mysql_tables
-./grant_mysql_privileges
+/etc/bacula/scripts/create_mysql_database
+/etc/bacula/scripts/make_mysql_tables
+/etc/bacula/scripts/grant_mysql_privileges
 
 * Caso não tenha definido uma senha
-./create_mysql_database -u root -p
-./make_mysql_tables -u root -p
-./grant_mysql_privileges -u root -p
+/etc/bacula/scripts/create_mysql_database -u root -p
+/etc/bacula/scripts/make_mysql_tables -u root -p
+/etc/bacula/scripts/grant_mysql_privileges -u root -p
 
 
 ########################################################################################################
@@ -243,9 +263,9 @@ chown postgres create_postgresql_database && chown postgres make_postgresql_tabl
 chown postgres grant_postgresql_privileges && chown postgres drop_postgresql_database && \
 chown postgres update_postgresql_tables
 su postgres
-./create_postgresql_database
-./make_postgresql_tables
-./grant_postgresql_privileges
+/etc/bacula/scripts/create_postgresql_database
+/etc/bacula/scripts/make_postgresql_tables
+/etc/bacula/scripts/grant_postgresql_privileges
 exit
 
 
@@ -275,7 +295,7 @@ de:   local   all             all                                     peer
 para: local   all             all                                     md5
 
 *Reiniciar o PostgreSQL
-/etc/init.d/postgresql restart
+systemctl restart postgresql
 
 
 =====================================================================================
@@ -288,6 +308,6 @@ e verá uma tela conforme abaixo
 root@bacula:/# bconsole
 root@debian:/etc/bacula/scripts# bconsole
 Connecting to Director 192.168.1.1:9101
-1000 OK: 103 bacula-dir Version: 9.6.3 (09 March 2020)
+1000 OK: 103 bacula-dir Version: 11.0.5 (03 June 2021)
 Enter a period to cancel a command.
 *
