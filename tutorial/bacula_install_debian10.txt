@@ -27,7 +27,7 @@ gawk gdb libacl1 libacl1-dev libssl-dev lsscsi apt-transport-https
 =====================================================================================
  >>> Pacotes necessários para compilação dos drivers cloud S3 <<<
 =====================================================================================
-apt-get libxml2-dev libcurl4-openssl-dev
+apt-get install libxml2-dev libcurl4-openssl-dev
 
 
 =====================================================================================
@@ -120,6 +120,12 @@ DESTDIR=/usr/local make clean
 DESTDIR=/usr/local make
 DESTDIR=/usr/local make install
 
+# Refazer os caches das libraries
+rm /etc/ld.so.cache
+sudo ldconfig
+
+Se tudo ocorrer bem o comando "s3" vai funcionar no terminal
+s3
 
 =====================================================================================
  >>> Baixando e Compilando o Fonte <<<
