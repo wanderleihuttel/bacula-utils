@@ -70,3 +70,14 @@ apt-get install curl bc coreutils
 ### CentOS ###
 yum -y install curl bc coreutils
 ```
+
+
+### Testando o script
+```
+Exemplo: /etc/bacula/scripts/_send_telegram.sh <JobId>
+         /etc/bacula/scripts/_send_telegram.sh 123
+```
+
+
+### Solucionando problemas
+Habilitando no script o modo debug (**debug=1**), é possível verificar possíveis erros.
