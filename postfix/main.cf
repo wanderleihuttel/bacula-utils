@@ -1,18 +1,22 @@
-# Postfix example relay external SMTP
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default is /etc/mailname.
+
 smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
 biff = no
+
+# appending .domain is the MUA's job.
 append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
 readme_directory = no
 
-# Hostname (modify the line below)
-myhostname = hostname_of_machine
-
+myhostname = bacula.domain.local
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-
-# Comment the line below in CentOS
 myorigin = /etc/mailname
-
 mydestination = $myhostname localhost.$mydomain localhost $mydomain
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_command = procmail -a "$EXTENSION"
@@ -20,25 +24,26 @@ mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 
-# SMTP relayhost
+#SMTP relayhost
 relayhost = [smtp.domain.com]:587
 
-# TLS Settings
-smtp_tls_loglevel = 1
+## TLS Settings
 smtp_use_tls = yes
+smtp_tls_loglevel = 1
+#smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
 smtpd_tls_received_header = yes
+
+# configuracao tls
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = noanonymous
 smtp_sasl_tls_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
 
-# Alias rewrite map mail
+#alias de mapeamento interno para externo
 smtp_generic_maps = hash:/etc/postfix/generic
 
-# Uncomment the lines below for debug
-#debug_peer_list=smtp.domain.com
-#debug_peer_level=3
-
+# sender-dependent sasl authentication
 smtp_sender_dependent_authentication = yes
 sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
 compatibility_level = 2
