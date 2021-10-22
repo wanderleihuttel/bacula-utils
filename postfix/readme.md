@@ -77,3 +77,10 @@ tail -f /var/log/maillog
 No Debian
 tail -f /var/log/mail.log
 ```
+
+### Configurar o email no recurso Messages do bacula-dir.conf
+Alterar o mailcommand e o operatorcommand a variável que está entre "<%r> e colocar o email configurado para enviar
+```
+DE:   mailcommand = "/usr/sbin/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula: %t %e of %c %l\" %r"
+PARA: mailcommand = "/usr/sbin/bsmtp -h localhost -f \"\(Bacula\) \<sender@domain.com\>\" -s \"Bacula: %t %e of %c %l\" %r"
+```
