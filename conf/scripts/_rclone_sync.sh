@@ -1,15 +1,19 @@
 #!/bin/bash
 # Author:   Wanderlei Hüttel
 # Email:    wanderlei.huttel@gmail.com
-# Version:  2.0
-# Date:     April 05, 2022
-
-# set -xv # Enable Debug Script
-# set +xv # Disable Debug Script
+# Version:  2.1
+# Date:     April 07, 2022
 
 #=============================================================================================================
 # Copy Bacula Volumes to Onedrive/Wasabi S3 Cloud and notify by telegram
 #=============================================================================================================
+
+
+#=============================================================================================================
+# Debug Mode 
+# false=disabled verbose mode | true=enabled verbose mode
+debug_verbose=true # false=disabled verbose mode | true=enabled verbose mode
+
 
 #=============================================================================================================
 # Global Variables
@@ -32,12 +36,10 @@ dayofmonth=$(date +%-d)
 # Rclone Default Parameters
 log_file_tmp="/var/log/bacula/rclone.tmp"
 log_file="/var/log/bacula/rclone.log"
-dry_run="" # --dry-run
+dry_run="--dry-run" # --dry-run = # Do a trial run without permanent changes.
 debug="--log-file ${log_file_tmp} --log-level INFO ${dry_run}"
 options="--stats=1000m --rc --rc-web-gui --rc-addr 0.0.0.0:5572 --rc-user admin --rc-pass admin --rc-web-gui-no-open-browser"
 
-# Debug Mode | false=disabled verbose mode | true=enabled verbose mode
-debug_verbose=false
 
 # Telegram API (Send messages)
 api_token="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -48,7 +50,8 @@ chat_id="YYYYYYYYY"
 # JSON with rclone commands
 json='[
 {"name":"/etc/bacula","command":"sync","provider":"onedrive","bucket":"bacula-backup","source":"/etc/bacula","destination":"/etc/bacula","params":"--onedrive-no-versions --exclude=\"*.pid\" --exclude=\"*.state\" --exclude=\"*.conmsg\" --exclude=\"*.trace\""},
-{"name":"Pools: Diária, Semanal e Mensal","command":"copyto","provider":"onedrive","bucket":"bacula-backup","source":"/backup/disco01","destination":"/StorageLocal1","params":"--onedrive-no-versions --include=\"Volume-Diario-*\" --include=\"Volume-Semanal-*\" --include=\"Volume-Mensal-*\""}
+{"name":"Pools: Diária, Semanal e Mensal","command":"copyto","provider":"onedrive","bucket":"bacula-backup","source":"/backup/disco01","destination":"/StorageLocal1","params":"--onedrive-no-versions --include=\"Volume-Diario-*\" --include=\"Volume-Semanal-*\" --include=\"Volume-Mensal-*\""},
+{"name":"Pool: VM", "command":"copyto" , "provider":"onedrive", "bucket":"bacula-backup", "source":"/backup/disco02", "destination":"/StorageLocal2", "params":"--onedrive-no-versions --include=\"Volume-VM-*\""}
 ]'
 
 
@@ -76,7 +79,8 @@ echo "$$" > $lockfile
 # Function to show messages on debug and send to log file
 function fn_show_message(){
     if $debug_verbose; then
-        echo -ne "$(date +"%Y/%m/%d %H:%M:%S ")$*\n"
+#        echo -ne "$(date +"%Y/%m/%d %H:%M:%S ")$*\n"
+        echo "$(date +"%Y/%m/%d %H:%M:%S ")$*"
     fi
     echo "$(date +"%Y/%m/%d %H:%M:%S ")$*" >> $log_file
 }
@@ -85,14 +89,11 @@ function fn_show_message(){
 #=============================================================================================================
 # Function to read rclone log and extract data summary
 function fn_rclone_sync(){
-    if $debug_verbose; then
-        cat $1
-    fi
-    cat $1 >> $log_file
-    g_retval=$(cat $1  | grep "There was nothing to transfer" | wc -l)
+    fn_show_message "$(<$1)"
+    g_retval=$(grep "There was nothing to transfer" $1 | wc -l)
     fn_show_message "Transfers had ocurred (g_retval: $g_retval)"
     if (( g_retval == 0 )); then
-        log=$(cat $1 | grep -E "^(Transferred:|Elapsed time:)" | sed -E 's/.*:\s+//g; s/\s?\/.*$//g' | tr '\n' '|')
+        log=$(grep -E "^(Transferred:|Elapsed time:)" $1 | sed -E 's/.*:\s+//g; s/\s?\/.*$//g' | tr '\n' '|')
         bytes=$(cut -d'|' -f1 <<< $log)
         files=$(cut -d'|' -f2 <<< $log)
         elapsed=$(cut -d'|' -f3 <<< $log)
@@ -103,7 +104,6 @@ function fn_rclone_sync(){
     else
         fn_show_message "There was nothing to transfer (g_retval: $g_retval)"
     fi
-    cat $log_file_tmp >> "/tmp/log.txt"
     rm -f $log_file_tmp
 }
 
@@ -155,7 +155,7 @@ else
 fi
 
 endtime=$(date +%s)
-(( totaltime=endtime-starttime+10800 ))
+(( totaltime = endtime - starttime + 10800 ))
 
 
 fn_show_message "Rclone copy start:        $(date -d @${starttime} +%H:%M:%S)"
@@ -167,6 +167,7 @@ fn_show_message "##### Rclone Copy Bacula Backup to Cloud ##### - finished"
 # Send Telegram Message
 message="${message}Rclone Finished/n$(date -d @${endtime} +'%d/%m/%Y %H:%M:%S')/n/n"
 message="${message}Rclone Elapsed Time/n$(date -d @${totaltime} +%H:%M:%S)/n/n"
-message=$(echo ${message} | sed 's/\/n/%0A/g')
+#message=$(echo ${message} | sed 's/\/n/%0A/g')
+message=$(sed 's/\/n/%0A/g' <<< $messsage)
 url="https://api.telegram.org/bot${api_token}/sendMessage?chat_id=${chat_id}&text=${message}"
 $curl -s "$url" > /dev/null
