@@ -1,51 +1,55 @@
 #!/bin/bash
+# Backup PfSense
 #
-# Example: ./backup-pfsense.sh 192.168.1.1 
+# Version 1.1 - 03/05/2020
 #
-
-
-if [ -z $1 ]
-then
-  echo "Use: $0 [IP or ADDRESS]"
-  exit 1
-fi
+# Working in 2.6.0-RELEASE (amd64)
 
 USERNAME=admin
 PASSWORD=pfsense
 PROTOCOL=http        # http or https
-ADDRESS=$1
-PORT=443
+ADDRESS=192.168.1.254
+PORT=80
 URL=${PROTOCOL}://${ADDRESS}:${PORT}
 DESTINATION=/tmp/pfsense
-FILENAME=config-${ADDRESS}-`date +%Y%m%d%H%M%S`.xml
+FILENAME=config-${ADDRESS}-$(date +%Y%m%d%H%M%S).xml
 
-if [ ! -d $DESTINATION ]
-then
-  mkdir -p $DESTINATION
+if [[ ! -d $DESTINATION ]]; then
+    mkdir -p $DESTINATION
 fi
 
 
-curl -L -k --cookie-jar cookies.txt \
-     ${URL}/ \
-     | grep "name='__csrf_magic'" \
-     | sed 's/.*value="\(.*\)".*/\1/' > csrf.txt
+curl -s -L -k --cookie-jar cookies.txt ${URL}/ | \
+     grep "name='__csrf_magic'" | \
+     sed 's/.*value="\(.*\)".*/\1/' > csrf.txt
+s1=$?
 
-
-curl -L -k --cookie cookies.txt --cookie-jar cookies.txt \
+curl -s -L -k --cookie cookies.txt --cookie-jar cookies.txt \
      --data-urlencode "login=Login" \
-     --data-urlencode "usernamefld=admin" \
-     --data-urlencode "passwordfld=be#Gu8bu" \
+     --data-urlencode "usernamefld=$USERNAME" \
+     --data-urlencode "passwordfld=$PASSWORD" \
      --data-urlencode "__csrf_magic=$(cat csrf.txt)" \
      ${URL}/ > /dev/null
+s2=$?
 
-curl -L -k --cookie cookies.txt --cookie-jar cookies.txt \
-     ${URL}/diag_backup.php  \
+curl -s -L -k --cookie cookies.txt --cookie-jar cookies.txt ${URL}/diag_backup.php  \
      | grep "name='__csrf_magic'"   \
      | sed 's/.*value="\(.*\)".*/\1/' > csrf.txt
+s3=$?
 
-curl -L -k --cookie cookies.txt --cookie-jar cookies.txt \
+curl -s -L -k --cookie cookies.txt --cookie-jar cookies.txt \
      --data-urlencode "download=download" \
      --data-urlencode "donotbackuprrd=yes" \
      --data-urlencode "__csrf_magic=$(head -n 1 csrf.txt)" \
      ${URL}/diag_backup.php > ${DESTINATION}/${FILENAME}
-     
+s4=$?
+
+(( status=s1+s2+s3+s4 ))
+
+if [[ $status == 0 ]]; then
+    echo "PfSense Backup OK $FILENAME"
+    exit 0
+else
+    echo "PfSense Backup Error $FILENAME"
+    exit 1
+fi
