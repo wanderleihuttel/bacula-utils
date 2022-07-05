@@ -1,0 +1,197 @@
+#####################################################################################
+# Passos para Instalação do Bacula via Compilação em Ubuntu 22.0.4 (jammy)          #
+# PostgreSQL 14                                                                     #
+# Autor: Wanderlei Hüttel                                                           #
+# Email: wanderlei.huttel at gmail.com                                              #
+# Data atualização:  04/07/2022                                                     #
+#####################################################################################
+* Leia tudo antes de começar a instalar só depois inicie a instalação. 
+* Se você possuir algum erro, revise todo tutorial novamente e verifique se não 
+esqueceu nenhum passo.
+* Este tutorial foi testado em Ubuntu 22.0.4 (jammy) em 04/07/2022
+
+=====================================================================================
+ >>> Atualizar a lista dos pacotes <<<
+=====================================================================================
+apt-get update
+
+
+=====================================================================================
+ >>> Pacotes necessários para compilação padrão <<<
+=====================================================================================
+apt-get install vim make gcc build-essential perl unp mc mtx libreadline8 \
+libreadline-dev zlib1g-dev lzop liblzo2-dev python3-lzo sudo gawk gdb libacl1 \
+libacl1-dev libssl-dev lsscsi apt-transport-https
+
+
+=====================================================================================
+ >>> Pacotes necessários para compilação dos drivers cloud S3 <<<
+=====================================================================================
+apt-get install libxml2-dev libcurl4-openssl-dev
+
+
+=====================================================================================
+ >>> Configurações vim e bashrc <<< (OPCIONAL)
+=====================================================================================
+Digitar o comando abaixo no terminal e selecionar a opção que contém "/usr/bin/vim.basic", 
+digitando o respectivo número.
+update-alternatives --config editor
+
+# Desabilitar modo visual do VIM/Editor Colorido
+# Incluir as seguintes linhas no arquivo acima
+vim ~/.vimrc
+set mouse-=a
+syntax on
+:highlight comment ctermfg=lightblue
+
+
+=====================================================================================
+ >>> Pacotes para utilizar o banco de dados PostgreSQL <<<
+=====================================================================================
+apt-get install postgresql-14 postgresql-14 postgresql-client-14 postgresql-server-dev-14
+
+
+=====================================================================================
+ >>> Baixando e Compilando o Fonte para usar os drivers Cloud S3 <<<
+=====================================================================================
+cd /usr/src
+wget -c https://www.bacula.org/downloads/libs3-20200523.tar.gz
+tar xvzf libs3-20200523.tar.gz
+cd /usr/src/libs3-20200523
+
+# Editar o arquivo GNUmakefile
+# Procurar a linha com o comando CFLAGS
+# grep -e "^CFLAGS" GNUmakefile e remover o parâmetro "-Werror" e salvar
+# Antes:  CFLAGS += -Wall -Werror -Wshadow -Wextra -Wno-format-truncation -Wno-stringop-overflow
+# Depois: CFLAGS += -Wall -Wshadow -Wextra -Wno-format-truncation -Wno-stringop-overflow
+DESTDIR=/usr/local make clean
+DESTDIR=/usr/local make
+DESTDIR=/usr/local make install
+
+# Refazer os caches das libraries
+sudo ldconfig
+
+Se tudo ocorrer bem o comando "s3" vai funcionar no terminal
+s3
+
+=====================================================================================
+ >>> Baixando e Compilando o Fonte <<<
+=====================================================================================
+cd /usr/src
+*Utilizando wget 
+wget --no-check-certificate https://sourceforge.net/projects/bacula/files/bacula/13.0.0/bacula-13.0.0.tar.gz
+
+tar xvzf bacula-13.0.0.tar.gz
+cd bacula-13.0.0.tar.gz
+
+*Utilizando git (sempre busca a versão mais recente, porém as vezes pode conter alguns bugs)
+apt-get install git
+git clone -b Branch-11.3 http://git.bacula.org/bacula.git bacula
+cd /usr/src/bacula/bacula
+
+
+* Comando de pré-compilação para PostgreSQL
+Recomendado criar um script "_bacula_postgresql.sh" para sempre usar as mesmas configurações quando atualizar.
+
+#!/usr/bin/env bash
+./configure \
+ --enable-smartalloc \
+ --with-postgresql \
+ --with-db-user=bacula \
+ --with-db-password=bacula \
+ --with-db-port=5432 \
+ --with-openssl \
+ --with-readline=/usr/include/readline \
+ --sysconfdir=/etc/bacula \
+ --bindir=/usr/bin \
+ --sbindir=/usr/sbin \
+ --with-scriptdir=/etc/bacula/scripts \
+ --with-plugindir=/etc/bacula/plugins \
+ --with-pid-dir=/var/run \
+ --with-subsys-dir=/etc/bacula/working \
+ --with-working-dir=/etc/bacula/working \
+ --with-bsrdir=/etc/bacula/bootstrap \
+ --with-s3=/usr/local \
+ --with-basename=bacula \
+ --with-hostname=XXX_IP_SERVIDOR_BACULA_XXX \
+ --with-systemd
+ --disable-conio \
+ --disable-nls \
+ --with-logdir=/var/log/bacula \
+ --with-dump-email=email@dominio.com.br \
+ --with-job-email=email@dominio.com.br
+
+*Comando para efetuar a compilação e instalação
+make -j 8
+make install
+make install-autostart
+
+*Comandos para configurar serviços do bacula no systemd
+systemctl enable bacula-{fd,dir,sd}.service
+systemctl start bacula-{fd,dir,sd}.service
+
+
+
+########################################################################################################
+#                                                                                                      #
+# Passos para criação do banco de dados, usuários e  permisssões PostgreSQL                            #
+#                                                                                                      #
+########################################################################################################
+
+
+=====================================================================================
+ >>> Criar as tabelas do bacula no PostgreSQL <<<
+=====================================================================================
+chmod 775 /etc/bacula
+cd /etc/bacula/scripts
+chown postgres create_postgresql_database && chown postgres make_postgresql_tables && \
+chown postgres grant_postgresql_privileges && chown postgres drop_postgresql_database && \
+chown postgres update_postgresql_tables
+su postgres
+/etc/bacula/scripts/create_postgresql_database
+/etc/bacula/scripts/make_postgresql_tables
+/etc/bacula/scripts/grant_postgresql_privileges
+
+
+=====================================================================================
+ >>> Definindo a senha do usuário bacula no PostgreSQL <<<
+=====================================================================================
+psql
+alter user bacula with password 'bacula';
+\q
+exit
+
+
+=====================================================================================
+ >>> Configurar o acesso ao PostgreSQL pelo bacula <<<
+=====================================================================================
+Backup dos arquivos de configuração:
+\cp /etc/postgresql/14/main/postgresql.conf{,.default}
+\cp /etc/postgresql/14/main/pg_hba.conf{,.default}
+
+Editar o arquivo /etc/postgresql/14/main/postgresql.conf e alterar a linha abaixo:
+de:    # listen_addresses = 'localhost'
+para:  listen_addresses = '*'
+
+Editar o arquivo /etc/postgresql/14/main/pg_hba.conf e altere a seguinte linha:
+# Abaixo da linha seguinte:
+de:     local   all             all                                     peer
+para:   local   all             bacula                                  md5
+
+
+*Reiniciar o PostgreSQL
+systemctl restart postgresql
+
+
+=====================================================================================
+ >>> Iniciar o bacula <<<
+=====================================================================================
+bacula start
+Se tudo ocorrer bem, o bacula iniciará sem problemas e você pode acessar com o bconsole,
+e verá uma tela conforme abaixo
+
+root@bacula:/# bconsole
+Connecting to Director 192.168.1.1:9101
+1000 OK: 10002 bacula-dir Version: 13.0.0 (04 July 2022)
+Enter a period to cancel a command.
+*
