@@ -47,7 +47,7 @@ function create_bacula_repository()
     echo " Inform the Bacula version"
     url="https://www.bacula.org/packages/${bacula_key}/debs/"
     IFS=$'\n'
-    versions=$(curl --silent --fail -r 0-0 "${url}" | grep -o '<a.*>.*/</a>' | sed 's/\(<a.*">\|\/<\/a>\)//g')
+    versions=$(curl --insecure --silent --fail -r 0-0 "${url}" | grep -o '<a.*>.*/</a>' | sed 's/\(<a.*">\|\/<\/a>\)//g')
     for i in ${versions}; do
         echo "   - $i";
     done
