@@ -4,7 +4,7 @@
 # Send message jobs to telegram bot
 # Author:  Wanderlei Hüttel
 # Email:   wanderlei.huttel@gmail.com
-# Version: 1.5 - 31/05/2022
+# Version: 1.6 - 18/08/2022
 #==============================================
 
 
@@ -44,8 +44,6 @@ human_bytes(){
     done
     echo "$val $( cut -f $index -d, <<< $extension )"
 }
-
-
 # end function
 
 
@@ -55,8 +53,6 @@ message_debug(){
         echo -ne "$1\n"
     fi
 }
-
-
 # end function
 message_debug "Debug: human_bytes '$(human_bytes 1024)'"
 message_debug "Debug: bconsole - '$bconsole'"
@@ -80,7 +76,7 @@ message_debug "Debug: query_pgsql - ['$query_pgsql']\n"
 
 #==============================================
 # Check database driver (PostgreSQL or MySQL)
-check_database=$($bconsole <<< "show catalog" | grep -oi "pgsql\|postgres\|postgresql" | wc -l)
+check_database=$(echo "show catalog" | $bconsole | grep -oi "pgsql\|postgres\|postgresql" | wc -l)
 message_debug "Debug: check_database - '$check_database'"
 if [[ $check_database -eq 1 ]]; then
    sql_query=$query_pgsql
@@ -142,7 +138,7 @@ message_debug "Debug: header - '$header'"
 # Format output of message
 message="$header/nJobName=$JobName/nJobid=$JobId/nClient=$Client/nJobBytes=$JobBytes/nJobFiles=$JobFiles/nLevel=$Level/nPool=$Pool/nStorage=$Storage/nStartTime=$StartTime/nEndTime=$EndTime/nDuration=$Duration/nJobStatus=$JobStatus/nStatus=$Status"
 messagelog="Message: JobName=$JobName | Jobid=$JobId | Client=$Client | JobBytes=$JobBytes | Level=$Level | Status=$Status"
-message=$(echo $message | sed 's|/n|%0A|g')
+message=$(echo $message | sed 's|/n|%0A|g; s| |%20|g')
 url="https://api.telegram.org/bot${api_token}/sendMessage?chat_id=${chat_id}&text=${message}"
 message_debug "Debug: message - '$message'"
 message_debug "Debug: messagelog - '$messagelog'"
